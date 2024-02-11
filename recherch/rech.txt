@@ -1,0 +1,20 @@
+
+MAC512 is a modern encryption method where the same key is used for signing and validating our tokens. 
+This means that other applications need our secret to check the validity of the JWTs and thus can use
+ it to issue new tokens. By switching to the asymmetric algorithm RSA256 we use a private key to sign
+  our tokens. We can pass over the public key for validation to other partys, and they cannot issue new
+   tokens by themselves.
+
+With the following commands we can create our own keys. The new files public.pem as well as private.pem
+we put afterwards in resources/certs of our Spring Boot application.
+
+
+# create key pair
+openssl genrsa -out keypair.pem 2048
+
+# extract public key
+openssl rsa -in keypair.pem -pubout -out public.pem
+
+# extract private key
+openssl pkcs8 -in keypair.pem -topk8 -nocrypt -inform PEM -outform PEM -out private.pem
+ 
