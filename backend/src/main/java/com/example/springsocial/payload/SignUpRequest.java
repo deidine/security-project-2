@@ -1,7 +1,11 @@
 package com.example.springsocial.payload;
 
+import java.util.List;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
+import com.example.springsocial.model.AppUserRole;
 
 
 public class SignUpRequest {
@@ -14,7 +18,10 @@ public class SignUpRequest {
 
     @NotBlank
     private String password;
-
+ List<AppUserRole> appUserRoles;
+public List<AppUserRole> getAppUserRoles(){
+    return appUserRoles;
+}
     public String getName() {
         return name;
     }

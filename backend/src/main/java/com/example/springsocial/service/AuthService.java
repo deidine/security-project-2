@@ -38,6 +38,7 @@ public class AuthService {
 
     public User saveUser(SignUpRequest signUpRequest) {
         User user = new User();
+        user.setAppUserRoles(signUpRequest.getAppUserRoles());
         user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(signUpRequest.getPassword());

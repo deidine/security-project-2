@@ -1,104 +1,107 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { OauthLoginService } from '../services/oauth-login.service';
-import { isObject } from 'util';
-import { NotificationService } from '../services/notification.service';
-import { Constants } from '../constants';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
+ import { TokenStorageService } from './services/token-storage.service';
+
+import { LoginCheckService, UserInfo, LoginInfo } from './services/login-check.service';
+import { AuthenticatorService } from './services/authenticator.service';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent implements OnInit {
 
-  errorMessage: string
-  invalidLogin: boolean = false;
-  loginForm: FormGroup
-  rememberMe: boolean = false;
-  display = 'none'
-  verifyModalData = {}
+  //  loginDetails = new LoginDetails('','');
 
-  constructor(private router:Router, 
-              private fb: FormBuilder,
-              private oauthService: OauthLoginService,
-              private notifyService: NotificationService) { }
-  
+
+  loading = false;
+  submitted = false;
+  returnUrl: string;
+   loginFormError = false;
+
+  loginInfo: LoginInfo = new LoginInfo();
+  user: UserInfo = new UserInfo();
+  userStorage: any;
+  roles: string[] = [];
+
+
+  constructor(private fb: FormBuilder,
+    private router: Router,
+    private loginService: LoginCheckService,
+    private authenticateService: AuthenticatorService,
+    private snackBar: MatSnackBar, private tokenStorage: TokenStorageService
+  ) { }
+  isLoggedIn = false;
+  isLoginFailed = false;
+
   ngOnInit() {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', Validators.required]
-    })
-    if(localStorage.getItem("email") && localStorage.getItem("password")){
-      this.loginForm.patchValue({
-        email: localStorage.getItem("email"),
-        password: localStorage.getItem("password")
-      })
+
+    this.authenticateService.checkLogin();
+    if (this.tokenStorage.getToken()) {
+      this.isLoggedIn = true;
+      this.roles = this.tokenStorage.getUser().roles;
     }
-    this.setVerifyModalData();
   }
 
-  get loginFormControl() {
-    return this.loginForm.controls;
+  loginForm: FormGroup = this.fb.group({
+    ipusername: ['', [Validators.required]],
+     ipPassword: ['', [Validators.required, Validators.minLength(5)]]
+
+  });
+
+  get f() { return this.loginForm.controls; }
+
+  handleSuccessfulResponse(response) {
+    this.user = response;
+     this.userStorage = this.tokenStorage.getUser()
+    localStorage.setItem("currentUserId", JSON.stringify(this.userStorage.id));
+    localStorage.setItem("currentUserEmail", JSON.stringify(this.userStorage.email));
+    localStorage.setItem("currentUserRole", JSON.stringify(this.userStorage.roles));
+    localStorage.setItem("currentUserName", (this.userStorage.username));
+    localStorage.setItem("UserToken", (this.tokenStorage.getToken()));
   }
 
-  getLogo() {
-    return Constants.LOGO_URL;
-  }
-  getAddon() {
-    return Constants.ADDON_URL;
-  }
+  validateSubmit() {
+    console.log("Inside validate Login method");
+    this.loginInfo.email = this.f.ipusername.value;
+    this.loginInfo.password = this.f.ipPassword.value;
 
-  onSubmit() {
-    let user = this.loginForm.value;
-    this.oauthService.basicJwtAuthLogin(user).subscribe(
+
+    this.loginService.login(this.loginInfo.email, this.loginInfo.password).subscribe(
       response => {
-        console.log(response)
-        this.notifyService.showToast("logged in successfully!", 'success');
-        this.invalidLogin = false;
-        this.saveCredentials();
-        this.router.navigate(['home'])
+        this.tokenStorage.saveToken(`Bearer ${response.accessToken}`);
+        
+        this.tokenStorage.saveUser(response);
+        // this.handleSuccessfulResponse(response)
+        this.isLoginFailed = false;
+        this.isLoggedIn = true;
+        // this.roles = this.tokenStorage.getUser().roles;
+        this.reloadPage();
       },
-      error => {
-        this.invalidLogin = true;
-        if(error.error.message) {
-          this.errorMessage = error.error.message;
-        } else {
-          this.errorMessage = "Unknown error occured, try after some time..";
-        }
+      err => {
+        this.handleSuccessfulResponse(err)
+
+        // this.reloadPage();
       }
-    )
+    );
+  }
+  reloadPage(): void {
+    window.location.reload();
+  }
+  onSubmit() {
+
+    this.validateSubmit();
+
+    if (this.user.result === false) {
+      this.loginFormError = true;
+    }
+
   }
 
-  toggleValue(event) {
-    if(event.target.checked) {
-      this.rememberMe = true;
-    }
-  }
-
-  saveCredentials() {
-    if(this.rememberMe) {
-      localStorage.setItem("email", this.loginForm.value.email)
-      localStorage.setItem("password", this.loginForm.value.password)
-    }
-  }
-  openVerifyEmailModal() {
-    this.setVerifyModalData('Verify email', 'Send link', 'verify');
-    this.display = 'block';
-  }
-  openForgotPassModal() {
-    this.setVerifyModalData('Reset Password', 'Send OTP', 'reset');
-    this.display = 'block';
-  }
-  eventDisplay(event) {
-    this.display = 'none';
-  }
-  setVerifyModalData(title:string = '', btn: string = '', type: string = '') {
-    this.verifyModalData = {
-      title: title,
-      btn: btn,
-      type: type
-    }
-  }
 }
+
+

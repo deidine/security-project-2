@@ -1,117 +1,154 @@
-<div class="container-fluid px-1 px-md-5 px-lg-1 px-xl-5 py-5 mx-auto">
-    <div class="card card0 border-0">
-        <div class="row d-flex">
-            <div class="col-lg-6">
-                <div class="card1 pb-5">
-                    <div class="row"> 
-                        <img [src]="getLogo()" class="logo"> 
-                    </div>
-                    <div class="row px-3 justify-content-center mt-4 mb-5 border-line"> 
-                        <img [src]="getAddon()" class="image"> 
-                    </div>
-                </div>
-            </div>
-            
-            <!-- SOCIAL SIGN IN OPTIONS -->
-            <div class="col-lg-6">
-                <div class="card2 card border-0 px-4 py-5">
-                    
-                    <app-social-login></app-social-login>
-                    
-                    <div class="row px-3 mb-4">
-                        <div class="line"></div> <small class="or text-center">Or</small>
-                        <div class="line"></div>
-                    </div>
-                    <span class="text-danger errorMsg" *ngIf="invalidLogin">
-                        {{ errorMessage }}
-                    </span>
-                    <!-- LOGIN FORM -->
-                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                        <div class="row px-3">
-                            <label class="mb-1">
-                                <h6 class="mb-0 text-sm">Email Address</h6>
-                            </label>
-                            <input class="form-control" type="email" 
-                                    formControlName="email"
-                                    placeholder="Enter a valid email address">
-                            <span class="text-danger"
-                                *ngIf="(loginFormControl.email.touched || submitted) && loginFormControl.email.errors?.required">
-                                Email is required
-                            </span>
-                            <span class="text-danger"
-                                *ngIf="loginFormControl.email.touched && loginFormControl.email.errors?.email">
-                                Enter a valid email address
-                            </span>
-                        </div>
+<!-- <div style="background: linear-gradient( #2b74bd ,rgb(183, 226, 243))"> -->
+<div>
+  <div class="login-main-div" >
+    <app-social-login></app-social-login>
 
-                        <div class="row px-3">
-                            <label class="mb-1">
-                                <h6 class="mb-0 text-sm">Password</h6>
-                            </label>
-                            <input type="password" 
-                                    formControlName="password"
-                                    class="form-control" 
-                                    placeholder="Enter password"> 
-                            <span class="text-danger"
-                                *ngIf="(loginFormControl.password.touched || submitted) && loginFormControl.password.errors?.required">
-                                Password is required
-                            </span>
-                        </div>
+    <mat-card class="mat-card-aligner example-card" >
+        <mat-card-header class="mat-card-header">
+            <mat-card-title>
+          <img class="mat-card-header-image" src="assets/images/DiMS login logo.png">
+        </mat-card-title>
+            <mat-card-subtitle>Sign-in to your account</mat-card-subtitle>
+        </mat-card-header>
 
-                        <div class="row px-3 mb-4">
-                            <div class="custom-control custom-checkbox custom-control-inline">
-                                <input  id="chk1"
-                                        (change)="toggleValue($event)" 
-                                        type="checkbox" 
-                                        name="chk" 
-                                        class="custom-control-input">
-                                <label for="chk1" class="custom-control-label text-sm">Remember me</label>
-                            </div>
-                            <a  class="ml-auto mb-0 text-sm"
-                                href="javascript:void(0)" 
-                                (click)="openForgotPassModal()">Forgot Password?</a>
-                        </div>
-
-                        <div class="row mb-3 px-3">
-                            <button type="submit" 
-                                    [disabled]="!loginForm.valid"
-                                    class="btn btn-blue text-center"> Login
-                            </button>
-                        </div>
-                    </form>
-                    <div class="row mb-4 px-3">
-                        <small class="font-weight-bold">
-                            Don't have an account?
-                            <a class="text-danger" [routerLink]="['/signup']">Register</a>
-                        </small>
-                        <small class="font-weight-bold ml-auto mb-0">
-                            Not received verification mail?
-                            <a  class="text-danger" 
-                                href="javascript:void(0)"
-                                (click)="openVerifyEmailModal()">Verify email</a>
-                        </small>
-                    </div>
-                </div>
-            </div>
+        <hr class="hr-border">
+        
+        <div *ngIf=loginFormError class="loginFormErrorDiv">
+            <h6 class="alert alert-danger">Invalid Credentials</h6>
         </div>
-        <!-- <div class="bg-blue py-4">
-            <div class="row px-3">
-                <small class="ml-4 ml-sm-5 mb-2">
-                    Copyright &copy; 2019. All rights reserved.
-                </small>
-                <div class="social-contact ml-4 ml-sm-auto">
-                    <span class="fa fa-facebook mr-4 text-sm"></span>
-                    <span class="fa fa-google-plus mr-4 text-sm"></span>
-                    <span class="fa fa-linkedin mr-4 text-sm"></span>
-                    <span class="fa fa-twitter mr-4 mr-sm-5 text-sm"></span>
-                </div>
-            </div>
-        </div> -->
-    </div>
-</div>
-<app-verify-link-modal 
-    [display]="display"
-    [modalData]="verifyModalData"
-    (eventDisplay)="eventDisplay($event)">
 
-</app-verify-link-modal>
+        <br>
+
+
+        <!-- Template Driven Approach -->
+        
+        <!-- <form #loginForm="ngForm">
+
+            <div class="form-group input-username-container">
+
+                <label for="username" >username</label>
+                <input type="username" class="form-control" #ipusername="ngModel" required
+                       [class.is-invalid]="ipusername.invalid && ipusername.touched"
+                       [(ngModel)]="loginDetails.inputusername" name=inputusername>
+
+                <small class="text-danger" 
+                       [class.d-none]=" ipusername.valid || ipusername.untouched ">Invalid username</small>       
+              </div>
+      
+              <div class="form-group input-username-container">
+
+                  <label for="password" >Password</label>
+                  <input type="password" class="form-control" #ipPassword="ngModel" required
+                         [class.is-invalid]="ipPassword.invalid && ipPassword.touched"
+                         [(ngModel)]="loginDetails.inputPassword" name="inputPassword">
+                  
+                      <small class="text-danger" 
+                      [class.d-none]=" ipPassword.valid || ipusername.untouched ">Invalid Password</small> 
+                         
+                         
+              </div>
+
+        </form> -->
+
+        
+        <!-- Reactive Approach -->
+
+        <form [formGroup] = "loginForm" (ngSubmit)="onSubmit()">
+
+          <div class="form-group">
+            
+            <label>username</label>
+            <input type="text" [class.is-invalid]="loginForm.get('ipusername').invalid
+                    && loginForm.get('ipusername').touched"
+                   [class.is-valid]="loginForm.get('ipusername').valid" 
+                   formControlName="ipusername" class="form-control">
+
+                   <small class="text-danger"
+                          [class.d-none]="loginForm.get('ipusername').valid
+                          || loginForm.get('ipusername').untouched">
+                       Invalid username  </small>
+            
+          </div>
+
+          <div class="form-group">
+            
+              <label>Password</label>
+              <input type="password" [class.is-invalid]="loginForm.get('ipPassword').invalid
+                      && loginForm.get('ipPassword').touched"
+                      [class.is-valid]="loginForm.get('ipPassword').valid" 
+                      formControlName="ipPassword" class="form-control">
+              <small [class.d-none]="loginForm.get('ipPassword').invalid 
+                      && loginForm.get('ipPassword').touched">Password must be of min. 6 characters</small>
+              
+              <small class="text-danger"
+                      [class.d-none]="loginForm.get('ipPassword').valid
+                      || loginForm.get('ipPassword').untouched">
+                  Invalid Password (min 6 characters required)</small>
+
+          </div>
+  
+
+       
+
+
+
+        <!-- Material Approach -->
+        
+        <!-- <form [formGroup] = "loginForm">
+          <div class="input-username-container">
+ 
+          
+          <mat-form-field class="form-element"> 
+              <input matInput placeholder="Enter username" formControlName="ipusername" >
+                    <mat-error *ngIf="!loginForm.controls['username'].valid && loginForm.controls['username'].touched">
+                      {{ getErrorusername() }}
+                      </mat-error>
+            </mat-form-field>
+          </div>
+
+            <br> <br>
+
+            <div class="input-password-container">
+                <mat-form-field>
+                  <input matInput formControlName="ipPassword" required
+                         placeholder="Enter your password" 
+                         [type]="passHide ? 'password' : 'text'">
+                  <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="passHide">
+                  <mat-icon>{{passHide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  </button>
+                  <mat-hint>Password should be of minimum six characters</mat-hint>
+                  <mat-error *ngIf="!loginForm.controls['password'].valid && loginForm.controls['password'].touched">
+                      Invalid Pasword
+                  </mat-error>
+                </mat-form-field>
+                              
+            </div>
+
+        </form> -->
+                    
+        <br>
+
+          <mat-card-actions style="justify-content: center">
+            <button mat-raised-button 
+                    class="btn btn-secondary"
+                    matTooltip="Log-in into your account"
+                    aria-label="Button that displays a tooltip that can be programatically disabled"
+                    [disabled]="loginForm.get('ipusername').invalid || loginForm.get('ipPassword').invalid"
+                    style="width:80%; left:10%; background:rgb(183, 226, 243)">
+                    <mat-icon >fingerprint</mat-icon>                  
+                    Login    
+             </button>
+          </mat-card-actions>
+
+
+        <br>
+
+      </form>
+        
+        <hr class="hr-border">
+
+    </mat-card>
+
+  </div>
+</div>
+  

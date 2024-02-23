@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { Constants } from '../constants';
+import { TokenStorageService } from '../login/services/token-storage.service';
 
 export const TOKEN = 'token';
 
@@ -10,13 +11,15 @@ export const TOKEN = 'token';
 })
 export class OauthLoginService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private tokenStorage: TokenStorageService) { }
 
   basicJwtAuthLogin(user) {
     return this.http.post<any>(Constants.API_BASE_URL + '/auth/login', user).pipe(
       map(
         data => {
-          localStorage.setItem(TOKEN, `Bearer ${data.accessToken}`)
+        this.tokenStorage.saveToken(`Bearer ${data.accessToken}`);
+         
+          // localStorage.setItem(TOKEN, `Bearer ${data.accessToken}`)
           return data;
         }
       )

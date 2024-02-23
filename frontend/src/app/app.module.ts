@@ -1,67 +1,71 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ReactiveFormsModule } from '@angular/forms';
-import { AngularBootstrapToastsModule } from 'angular-bootstrap-toasts';
-import { NgSpinnerModule } from 'ng-bootstrap-spinner';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastNotificationsModule } from 'ngx-toast-notifications';
-
-import { AppRoutingModule, externalUrlProvider } from './app-routing.module';
+import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { NgxLoadingModule } from 'ngx-loading';
+import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { SignupComponent } from './signup/signup.component';
-import { Oauth2Handler } from './oauth2handler';
-import { LogoutComponent } from './logout/logout.component';
-import { HttpIntercpterService } from './services/http/http-intercpter.service';
-import { HomeModule } from './home/home.module';
-import { SharedModule } from './shared/shared.module';
-import { LoaderInterceptorService } from './services/http/loader-interceptor.service';
-import { SocialLoginComponent } from './social-login/social-login.component';
-import { ExternalUrlDirective } from './directives/external-url.directive';
-import { ActivatedRouteSnapshot } from '@angular/router';
-import { NotFoundComponent } from './not-found.component';
+import { MaterialModule } from '../material.module';
 
-@NgModule({ 
+import { MyProfileComponent } from './my-profile/my-profile.component';
+import { AddDepComponent } from './department/add-dep/add-dep.component';
+
+import { departmentComponent } from './department/department.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { UpdatePasswordComponent } from './my-profile/update-password/update-password.component';
+import { HeaderComponent, DialogOverviewExampleDialog } from './header/header.component';
+import { SidenavbarComponent } from './sidenavbar/sidenavbar.component';
+import { LogoutDialogComponent } from './header/logout-dialog/logout-dialog.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { RegisterComponent } from './register/register.component';
+import { EditDepComponent } from './department/edit-dep/edit-dep.component';
+import { AddEntiteComponent } from './Entite/add-entite/add-entite.component';
+import { GetAllentitesComponent } from './Entite/get-all-entites/get-all-entites.component';
+import { hover } from './header/hover.component'; 
+import { LoginComponentOauth2 } from './oauth2/login/login.component';
+import { RegisterComponent2 } from './oauth2/register/register.component';
+import { SocialLoginComponent } from './social-login/social-login.component';
+import { Oauth2Handler } from './social-login/oauth2handler';
+import { NotFoundComponent } from './social-login/not-found.component';
+// import { GetentiteByCategoryComponent } from './Entite/get-entite-by-category/get-entite-by-category.component';
+// import { UpdateEntiteComponent } from './Entite/update-entite/update-entite.component';
+
+@NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    SignupComponent,
+    LoginComponent, departmentComponent,
+    // DistributerComponent,
     Oauth2Handler,
-    LogoutComponent,
+    NotFoundComponent ,
+    // RetailerComponent,
     SocialLoginComponent,
-    ExternalUrlDirective,
-    NotFoundComponent,
+    AddEntiteComponent, GetAllentitesComponent,//GetentiteByCategoryComponent,UpdateEntiteComponent,
+    UpdatePasswordComponent,
+    EditDepComponent, AddDepComponent, HeaderComponent, SidenavbarComponent, DialogOverviewExampleDialog, LogoutDialogComponent
+    ,RegisterComponent2,
+    MyProfileComponent,
+    PageNotFoundComponent,
+    LoginComponentOauth2,
+    RegisterComponent,
+    hover, 
   ],
   imports: [
     BrowserModule,
-    HttpClientModule,
-    ReactiveFormsModule,
     AppRoutingModule,
-    NgSpinnerModule,
     BrowserAnimationsModule,
-    AngularBootstrapToastsModule,
-    HomeModule,
-    SharedModule,
-    ToastNotificationsModule.forRoot(
-      { 
-        duration: 6000, type: 'primary', 
-        position: 'bottom-right',
-        preventDuplicates: true
-      }
-    )
+    ReactiveFormsModule,
+    FormsModule,
+    HttpClientModule,
+    MaterialModule,
+    NoopAnimationsModule,
+    NgbModule,
+    NgxLoadingModule.forRoot({})
+
   ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: HttpIntercpterService, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptorService, multi: true },
-    {
-      provide: externalUrlProvider,
-      useValue: (route: ActivatedRouteSnapshot) => {
-          const externalUrl = route.paramMap.get('externalUrl');
-          window.open(externalUrl, '_self');
-      },
-  },
-  ],
+  entryComponents: [DialogOverviewExampleDialog],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -72,7 +72,8 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-
+        System.out.println("deidine 5a9 mn houn"+signUpRequest.getAppUserRoles());
+System.out.println();
         if (authService.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Account already exists on this mail Id.");
         }

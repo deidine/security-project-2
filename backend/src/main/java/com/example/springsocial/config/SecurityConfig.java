@@ -1,4 +1,5 @@
 package com.example.springsocial.config;
+import org.springframework.http.HttpMethod;
 
 import com.example.springsocial.security.*;
 import com.example.springsocial.security.oauth2.CustomOAuth2UserService;
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -104,7 +106,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/auth/**", "/oauth2/**")
+                .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
+                .antMatchers("/auth/**",
+                 "/oauth2/**", "/api/entite/mougatta", 
+                 "/api/entite/cities")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -115,13 +120,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                 .and()
                 .redirectionEndpoint()
-                .baseUri("/oauth2/callback/*") 
+                .baseUri("/oauth2/callback/*")
                 .and()
                 .userInfoEndpoint()
                 .userService(customOAuth2UserService)
                 .and()
                 .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler);
+                .failureHandler(oAuth2AuthenticationFailureHandler)
+                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/403");
+                
+                // If a user try to access a resource without having enough permissions
+                http.exceptionHandling().accessDeniedPage("/login");
+                
+    http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);
+    http.headers().contentSecurityPolicy("script-src 'self'");
 
         // Add our custom Token based authentication filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

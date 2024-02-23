@@ -1,15 +1,19 @@
 package com.example.springsocial.security;
 
+import com.example.springsocial.model.AppUserRole;
 import com.example.springsocial.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
     private Long id;
@@ -25,10 +29,29 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = Collections.
-                singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+    // public static UserPrincipal create(User user) {
+    // List<GrantedAuthority> authorities = Collections.
+    // singletonList(new SimpleGrantedAuthority("ROLE_USER"));
 
+    // return new UserPrincipal(
+    // user.getId(),
+    // user.getEmail(),
+    // user.getPassword(),
+    // authorities
+    // );
+    // }
+    // public String createToken(String username, List<AppUserRole> appUserRoles) {
+
+    // Claims claims = Jwts.claims().setSubject(username);
+    // claims.put("auth", appUserRoles.stream().map(s -> new
+    // SimpleGrantedAuthority(s.getAuthority()))
+    // .filter(Objects::nonNull).collect(Collectors.toList()));
+
+    public static UserPrincipal create(User user, List<AppUserRole> roles) {
+        List<GrantedAuthority> authorities = roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority()))
+                .filter(Objects::nonNull).collect(Collectors.toList()) ;
+        
+    
         return new UserPrincipal(
                 user.getId(),
                 user.getEmail(),
@@ -38,7 +61,8 @@ public class UserPrincipal implements OAuth2User, UserDetails {
     }
 
     public static UserPrincipal create(User user, Map<String, Object> attributes) {
-        UserPrincipal userPrincipal = UserPrincipal.create(user);
+         
+        UserPrincipal userPrincipal = UserPrincipal.create(user, user.getAppUserRoles());
         userPrincipal.setAttributes(attributes);
         return userPrincipal;
     }

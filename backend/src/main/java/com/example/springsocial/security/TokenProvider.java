@@ -1,13 +1,17 @@
 package com.example.springsocial.security;
 
 import com.example.springsocial.config.AppProperties;
+import com.example.springsocial.model.AppUserRole;
+
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Service
 public class TokenProvider {
@@ -34,6 +38,7 @@ public class TokenProvider {
                 .compact();
     }
 
+    
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())

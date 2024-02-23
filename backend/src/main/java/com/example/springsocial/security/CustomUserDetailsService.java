@@ -4,6 +4,10 @@ package com.example.springsocial.security;
 import com.example.springsocial.exception.ResourceNotFoundException;
 import com.example.springsocial.model.User;
 import com.example.springsocial.repository.UserRepository;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class  CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     UserRepository userRepository;
@@ -24,9 +28,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with email : " + email)
-        );
-
-        return UserPrincipal.create(user);
+        ); 
+        return UserPrincipal.create(user,user.getAppUserRoles());
     }
 
     @Transactional
@@ -34,8 +37,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = userRepository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("User", "id", id)
         );
-
-        return UserPrincipal.create(user);
+       
+        return UserPrincipal.create(user,user.getAppUserRoles());
     }
 
     @Transactional
