@@ -1,5 +1,7 @@
 package com.example.springsocial.security.oauth2;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.example.springsocial.exception.OAuth2AuthenticationProcessingException;
 import com.example.springsocial.model.AuthProvider;
 import com.example.springsocial.model.User;
@@ -8,6 +10,11 @@ import com.example.springsocial.security.UserPrincipal;
 import com.example.springsocial.security.oauth2.user.OAuth2UserInfo;
 import com.example.springsocial.security.oauth2.user.OAuth2UserInfoFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -16,6 +23,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
@@ -43,17 +51,19 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     private OAuth2User processOAuth2User(OAuth2UserRequest oAuth2UserRequest, OAuth2User oAuth2User) {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
-        // System.out.println("hi
-        // "+oAuth2UserRequest.getClientRegistration().getRegistrationId());
-        // System.out.println("hi2 " + oAuth2UserInfo.getEmail());
-        // System.out.println("hi3
-        // "+oAuth2UserRequest.getClientRegistration().getClientName());
-        // System.out.println("hi3
-        // "+oAuth2UserRequest.getClientRegistration().getRedirectUri());
-        // System.out.println("hi3
-        // "+oAuth2UserRequest.getClientRegistration().getClientId());
+        System.out.println("token" + oAuth2UserRequest.getAccessToken().getTokenValue());
+        System.out.println(requestEmail(oAuth2UserRequest.getAccessToken().getTokenValue()) + "hi"
+                + oAuth2UserRequest.getClientRegistration().getRegistrationId());
+        System.out.println("hi2 " + oAuth2UserInfo.getEmail());
+        System.out.println("hi3" + oAuth2UserRequest.getClientRegistration().getClientName());
+        System.out.println("hi3" + oAuth2UserRequest.getClientRegistration().getRedirectUri());
+        System.out.println("hi3" + oAuth2UserRequest.getClientRegistration().getClientId());
         if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
-            throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+            if (oAuth2UserRequest.getClientRegistration().getRegistrationId().equalsIgnoreCase("github")) {
+                oAuth2UserInfo.setEmail(requestEmail(oAuth2UserRequest.getAccessToken().getTokenValue()));
+            } else {
+                throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+            }
         }
 
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
@@ -91,4 +101,56 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.save(existingUser);
     }
 
+    private String requestEmail(String token) {
+        String url = "https://api.github.com/user/emails";
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, request, String.class);
+
+        if (response.getStatusCode() == HttpStatus.OK) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                GithubEmailResponse[] emails = mapper.readValue(response.getBody(), GithubEmailResponse[].class);
+
+                String primaryEmail = "";
+                for (GithubEmailResponse email : emails) {
+                    if (email.isPrimary()) {
+                        primaryEmail = email.getEmail();
+                        break;
+                    }
+                }
+                return primaryEmail;
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to deserialize JSON response", e);
+            }
+        } else {
+            throw new RuntimeException("Email not found from OAuth2 provider");
+        }
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    private static class GithubEmailResponse {
+        private String email;
+        private boolean primary;
+        private boolean verified;
+        private String visibility;
+
+        public String getEmail() {
+            return email;
+        }
+
+        public boolean isPrimary() {
+            return primary;
+        }
+
+        public boolean isVerified() {
+            return verified;
+        }
+
+        public String getVisibility() {
+            return visibility;
+        }
+    }
 }

@@ -1,0 +1,17 @@
+{"properties": [
+  {
+    "name": "security.uri.white-list",
+    "type": "java.lang.String",
+    "description": "A description for 'security.uri.white-list'"
+  },
+  {
+    "name": "security.disable.csrf",
+    "type": "java.lang.String",
+    "description": "A description for 'security.disable.csrf'"
+  },
+  {
+    "name": "security.cors.allowed.origins",
+    "type": "java.lang.String",
+    "description": "A description for 'security.cors.allowed.origins'"
+  }
+]}

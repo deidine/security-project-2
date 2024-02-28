@@ -1,3 +1,38 @@
+security:
+  uri:
+      # URI without authenticated
+      white-list : /api/v1/auth/**
+      # false if you work with session
+  disable :
+      csrf : true
+   
+  # Pendiente actualizar para producción
+  cors:
+      allowed:
+           origins: "http://localhost:4200"
+# Logbook: HTTP request and response logging
+logging:
+      level:
+        org:
+          zalando:
+            logbook : TRACE
+             
+
+# server : 
+#     port : 3000
+    # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly.
+    # servlet:
+    #       encoding:
+    #               charset: UTF-8
+    # # Enable http encoding support.
+    # servlet:
+    #       encoding:
+    #               enabled: true
+    # # Force the encoding to the configured charset on HTTP requests and responses.
+    # servlet:
+    #       encoding:
+    #               force: true
+
 spring:
     # address : 192.168.56.215
     datasource:
@@ -14,13 +49,17 @@ spring:
         properties:
             hibernate:
                 dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
     security:
       oauth2:
+      # https://console.cloud.google.com/apis/credentials?project=qgis-389317
+      # https://grafana.com/docs/grafana/latest/setup-grafana/configure-security/configure-authentication/google/#:~:text=Configure%20Google%20OAuth2%20authentication%201%20Create%20Google%20OAuth,Available%20in%20Grafana%20v10.2.0%20and%20later%20versions.%20
         client:
           registration:
             google:
-              clientId: 281298393658-k5skh9400nib145gu6gk7lhf73q8jnb5.apps.googleusercontent.com
-              clientSecret: LV44Fhbz6aTE8fz1byhZDt5e
+            # https://console.cloud.google.com/apis/credentials?project=qgis-389317
+              clientId: 288908106307-v4c96gqaqi5ifdjp5uevqtaej99qpk1d.apps.googleusercontent.com
+              clientSecret: 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
               redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
               scope:
                 - email
@@ -34,11 +73,11 @@ spring:
                 - public_profile
             github:
               clientId: 1fe8cadbc5f9d68da253
-              clientSecret: b7bed083e3f1333ddf337968bba42633adb1bc0e
+              clientSecret: 8bdcb174d944ca2c67b7da01ba8612d089ab49ce
               redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
-              # scope:
-              #   - user:email
-              #   - read:user
+              scope:
+                - user:email
+                - user
           provider:
             facebook:
               authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
@@ -69,14 +108,16 @@ app:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
     tokenExpirationMsec: 864000000
+    cors:
+        allowedOrigins: http://localhost:4200,http://localhost:8080
   oauth2:
     # After successfully authenticating with the OAuth2 Provider,
     # we'll be generating an auth token for the user and sending the token to the
     # redirectUri mentioned by the client in the /oauth2/authorize request.
     # We're not using cookies because they won't work well in mobile clients.
     authorizedRedirectUris:
-      - http://192.168.56.215:4200/oauth2/redirect
       - http://localhost:4200/oauth2/redirect
+      - http://192.168.56.215:4200/oauth2/redirect
       - http://localhost:3000/oauth2/redirect
       - myandroidapp://oauth2/redirect
       - myiosapp://oauth2/redirect

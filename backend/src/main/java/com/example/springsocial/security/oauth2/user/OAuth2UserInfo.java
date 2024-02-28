@@ -1,4 +1,5 @@
 package com.example.springsocial.security.oauth2.user;
+import java.util.HashMap;
 
 import java.util.Map;
 
@@ -20,4 +21,9 @@ public abstract class OAuth2UserInfo {
     public abstract String getEmail();
 
     public abstract String getImageUrl();
+     // ADDED
+     public void setEmail(String email) {
+        attributes = new HashMap<String, Object>(attributes);
+        attributes.put("email", email);
+    }
 }

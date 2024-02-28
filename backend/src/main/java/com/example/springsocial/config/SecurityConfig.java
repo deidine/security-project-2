@@ -1,11 +1,19 @@
 package com.example.springsocial.config;
+
 import org.springframework.http.HttpMethod;
+import org.springframework.core.env.Environment;
+
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.example.springsocial.security.*;
 import com.example.springsocial.security.oauth2.CustomOAuth2UserService;
 import com.example.springsocial.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.springsocial.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.example.springsocial.security.oauth2.OAuth2AuthenticationSuccessHandler;
+
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,12 +29,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private Environment env;
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
@@ -79,14 +90,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        if (Boolean.parseBoolean(env.getRequiredProperty("security.disable.csrf")))
+            http.csrf().disable();
         http
                 .cors()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .csrf()
-                .disable()
                 .formLogin()
                 .disable()
                 .httpBasic()
@@ -106,10 +118,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
+                .antMatchers(env.getRequiredProperty("security.uri.white-list").split(",")).permitAll()
+
+                // .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
                 .antMatchers("/auth/**",
-                 "/oauth2/**", "/api/entite/mougatta", 
-                 "/api/entite/cities")
+                        "/oauth2/**", "/api/entite/mougatta",
+                        "/api/entite/cities")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -130,14 +144,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .accessDeniedPage("/403");
-                
-                // If a user try to access a resource without having enough permissions
-                http.exceptionHandling().accessDeniedPage("/login");
-                
-    http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);
-    http.headers().contentSecurityPolicy("script-src 'self'");
+
+        // If a user try to access a resource without having enough permissions
+        http.exceptionHandling().accessDeniedPage("/login");
+
+        http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);
+        http.headers().contentSecurityPolicy("script-src 'self'");
 
         // Add our custom Token based authentication filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
+
+    // @Bean
+    // CorsConfigurationSource corsConfigurationSource() {
+    //     CorsConfiguration configuration = new CorsConfiguration();
+    //     configuration
+    //             .setAllowedOrigins(Arrays.asList(env.getRequiredProperty("security.cors.allowed.origins").split(",")));
+    //     configuration.setAllowCredentials(true);
+    //     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
+    //     configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Content-Type",
+    //             "Access-Control-Request-Headers", "Authorization", "X-Requested-With"));
+    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //     source.registerCorsConfiguration("/**", configuration);
+    //     return source;
+    // }
 }
