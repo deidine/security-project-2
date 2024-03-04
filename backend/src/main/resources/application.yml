@@ -17,7 +17,8 @@ logging:
           zalando:
             logbook : TRACE
              
-
+# server.port=8081
+# server.address=192.168.0.93
 # server : 
 #     port : 3000
     # Charset of HTTP requests and responses. Added to the "Content-Type" header if not set explicitly.

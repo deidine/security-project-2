@@ -5,6 +5,8 @@ import org.springframework.core.env.Environment;
 
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.springsocial.security.*;
 import com.example.springsocial.security.oauth2.CustomOAuth2UserService;
@@ -156,17 +158,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
+    
+// i have alredy configure cros in http.cros() this is for cros acess origin 
     // @Bean
-    // CorsConfigurationSource corsConfigurationSource() {
-    //     CorsConfiguration configuration = new CorsConfiguration();
-    //     configuration
-    //             .setAllowedOrigins(Arrays.asList(env.getRequiredProperty("security.cors.allowed.origins").split(",")));
-    //     configuration.setAllowCredentials(true);
-    //     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE"));
-    //     configuration.setAllowedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Content-Type",
-    //             "Access-Control-Request-Headers", "Authorization", "X-Requested-With"));
-    //     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    //     source.registerCorsConfiguration("/**", configuration);
-    //     return source;
+    // public WebMvcConfigurer corsConfigurer() {
+    //     return new WebMvcConfigurer() {
+    //         @Override
+    //         public void addCorsMappings(CorsRegistry registry) {
+    //             registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:9000");
+    //         }
+    //     };
     // }
+    //fro multuple ip
+    // registry.addMapping("/**").allowedOrigins("http://domain1.com", "http://domain2.com");
+
+    // @Override
+    // public void addCorsMappings(final CorsRegistry registry) {
+    //     registry.addMapping("/**")
+    //         .allowedOrigins(clientPort)
+    //         .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.HEAD.name())
+    //         .allowedHeaders(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE)
+    //         .exposedHeaders(JwtHeader)
+    //         .allowCredentials(true)
+    //         .maxAge(86400);
+    // }
+
 }
