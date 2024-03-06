@@ -1,4 +1,6 @@
-security:
+security: 
+  require-ssl: true
+
   uri:
       # URI without authenticated
       white-list : /api/v1/auth/**
@@ -9,14 +11,22 @@ security:
   # Pendiente actualizar para producción
   cors:
       allowed:
-           origins: "http://localhost:4200"
+           origins: "https://localhost:4200"
 # Logbook: HTTP request and response logging
 logging:
       level:
         org:
           zalando:
             logbook : TRACE
-             
+server:
+  port: 8080
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:project.p12
+    key-store-password : deidine
+    key-alias: projecm2
+    ssl.key-password: somepass
+    enabled : true
 # server.port=8081
 # server.address=192.168.0.93
 # server : 
@@ -59,8 +69,8 @@ spring:
           registration:
             google:
             # https://console.cloud.google.com/apis/credentials?project=qgis-389317
-              clientId: 288908106307-v4c96gqaqi5ifdjp5uevqtaej99qpk1d.apps.googleusercontent.com
-              clientSecret: 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
+              clientId: 288908106307-rstuok0fiiarb4ju3lah8bj80dpfc3i9.apps.googleusercontent.com
+              clientSecret: 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
               redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
               scope:
                 - email
@@ -73,8 +83,8 @@ spring:
                 - email
                 - public_profile
             github:
-              clientId: 1fe8cadbc5f9d68da253
-              clientSecret: 8bdcb174d944ca2c67b7da01ba8612d089ab49ce
+              clientId: cf73cc1029a654d3e39f
+              clientSecret: 81906dcda5afa6e5bf59da68ea6cb333d13483db
               redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
               scope:
                 - user:email
@@ -84,33 +94,30 @@ spring:
               authorizationUri: https://www.facebook.com/v3.0/dialog/oauth
               tokenUri: https://graph.facebook.com/v3.0/oauth/access_token
               userInfoUri: https://graph.facebook.com/v3.0/me?fields=id,first_name,middle_name,last_name,name,email,verified,is_verified,picture.width(250).height(250)      
+    
     mail:
       host: smtp.gmail.com
       port: 587
+      username: cheigeurdeidine@gmail.com
+      password: mpig dbal ueaf fwrp
+      # protocol: smtp
+      # tls: true
       properties:
         mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
-      # properties:
-      #   mail:
-      #     smtp:
-      #       starttls:
-      #         enable: true
-      #         required: true
-      #       auth: true
-      #       connectiontimeout: 5000
-      #       timeout: 5000
-      #       writetimeout: 5000
-      username: cheigeurdeidine@gmail.com
-      password: hjhj
+            smtp:
+              timeout: 5000
+              writetimeout: 5000
+              connectiontimeout: 5000
+              auth: true
+              starttls:
+                enable: true 
+
 app:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
     tokenExpirationMsec: 864000000
     cors:
-        allowedOrigins: http://localhost:4200,http://localhost:8080
+        allowedOrigins: https://localhost:4200,https://localhost:8080
   oauth2:
     # After successfully authenticating with the OAuth2 Provider,
     # we'll be generating an auth token for the user and sending the token to the

@@ -58,11 +58,7 @@ export class EntiteService {
   } getMougatta(): Observable<any> {
     return this.httpClient.get<any>(`${environment.apiURL}/entite/mougatta`, {
 
-      headers: new HttpHeaders(
-        {
-          'Authorization': window.sessionStorage.getItem('auth-token')
-        }
-      )
+       
     });
   }
 

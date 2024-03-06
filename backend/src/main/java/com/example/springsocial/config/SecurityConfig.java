@@ -1,22 +1,15 @@
 package com.example.springsocial.config;
-
-import org.springframework.http.HttpMethod;
+ 
 import org.springframework.core.env.Environment;
-
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+ 
 
 import com.example.springsocial.security.*;
 import com.example.springsocial.security.oauth2.CustomOAuth2UserService;
 import com.example.springsocial.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.springsocial.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.example.springsocial.security.oauth2.OAuth2AuthenticationSuccessHandler;
-
-import java.util.Arrays;
-
-import org.springframework.beans.factory.annotation.Autowired;
+ 
+import org.springframework.beans.factory.annotation.Autowired; 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -78,6 +71,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .userDetailsService(customUserDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
+
+   
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -158,29 +153,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-    
-// i have alredy configure cros in http.cros() this is for cros acess origin 
+    // i have alredy configure cros in http.cros() this is for cros acess origin
     // @Bean
     // public WebMvcConfigurer corsConfigurer() {
-    //     return new WebMvcConfigurer() {
-    //         @Override
-    //         public void addCorsMappings(CorsRegistry registry) {
-    //             registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:9000");
-    //         }
-    //     };
+    // return new WebMvcConfigurer() {
+    // @Override
+    // public void addCorsMappings(CorsRegistry registry) {
+    // registry.addMapping("/greeting-javaconfig").allowedOrigins("http://localhost:9000");
     // }
-    //fro multuple ip
-    // registry.addMapping("/**").allowedOrigins("http://domain1.com", "http://domain2.com");
+    // };
+    // }
+    // fro multuple ip
+    // registry.addMapping("/**").allowedOrigins("http://domain1.com",
+    // "http://domain2.com");
 
     // @Override
     // public void addCorsMappings(final CorsRegistry registry) {
-    //     registry.addMapping("/**")
-    //         .allowedOrigins(clientPort)
-    //         .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.HEAD.name())
-    //         .allowedHeaders(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE)
-    //         .exposedHeaders(JwtHeader)
-    //         .allowCredentials(true)
-    //         .maxAge(86400);
+    // registry.addMapping("/**")
+    // .allowedOrigins(clientPort)
+    // .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(),
+    // HttpMethod.PATCH.name(), HttpMethod.DELETE.name(), HttpMethod.HEAD.name())
+    // .allowedHeaders(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE)
+    // .exposedHeaders(JwtHeader)
+    // .allowCredentials(true)
+    // .maxAge(86400);
     // }
 
+    // @Bean
+    // public Customizer<RateLimiterConfig> rateLimiterCustomizer() {
+    // return rateLimiterConfig -> rateLimiterConfig
+    // .limitForPeriod(10) // Maximum allowed requests within the defined duration
+    // .limitRefreshPeriod(Duration.ofMinutes(1)); // Duration for the rate limit
+    // window
+    // }
+    
 }

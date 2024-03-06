@@ -1,6 +1,6 @@
 export class Constants {
-    public static API_BASE_URL = 'http://localhost:8080';
-    public static OAUTH2_REDIRECT_URI = 'http://localhost:4200/oauth2/redirect';
+    public static API_BASE_URL = 'https://localhost:8080';
+    public static OAUTH2_REDIRECT_URI = 'https://localhost:4200/oauth2/redirect';
 
     // public static API_BASE_URL = 'http://192.168.56.215/:8080';
     // public static OAUTH2_REDIRECT_URI = 'http://192.168.56.215:4200/oauth2/redirect';

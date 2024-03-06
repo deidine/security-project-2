@@ -13,3 +13,4 @@ public class SpringSocialApplication {
 		SpringApplication.run(SpringSocialApplication.class, args);
 	}
 }
+ 

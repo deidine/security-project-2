@@ -28,9 +28,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Calendar;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -49,8 +46,9 @@ public class AuthController {
 
     @Autowired
     private EmailSenderService emailSenderService;
-
+    
     @PostMapping("/login")
+    // @RateLimit(name = "myEndpointLimit", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
@@ -102,7 +100,7 @@ System.out.println();
         
         if((confirmationToken.getExpiryDate().getTime() - 
                 calendar.getTime().getTime()) <= 0) {
-            return ResponseEntity.badRequest().body("Link expired. Generate new link from http://localhost:4200/login");
+            return ResponseEntity.badRequest().body("Link expired. Generate new link from http:s//localhost:4200/login");
         }
 
         user.setEmailVerified(true);
@@ -139,4 +137,11 @@ System.out.println();
             throw new BadRequestException("User not found with this email id");
         }
     }
+
+    public String rateLimitFallback(Throwable throwable) {
+        // Handle rate limit exceeded scenario
+        System.out.println("yiu have execeed rate lime");
+        return "rate limite";
+    }
+
 }

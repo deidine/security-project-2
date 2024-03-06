@@ -59,6 +59,9 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
+            "ssl": true,
+        "sslKey": "project.12",
+        "sslCert": "project.crt",
             "browserTarget": "dims:build"
           },
           "configurations": {
@@ -84,7 +87,8 @@
               "src/favicon.ico",
               "src/assets"
             ],
-            "styles": [
+            "styles": [  "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css"
             ],

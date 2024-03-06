@@ -11,7 +11,7 @@ export class SocialLoginComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-  }
+  } 
 
   getLoginPage(provider: string): string {
     switch (provider) {
