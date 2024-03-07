@@ -31,6 +31,15 @@ public class  CustomUserDetailsService implements UserDetailsService {
         ); 
         return UserPrincipal.create(user,user.getAppUserRoles());
     }
+    @Transactional
+    public User loadUserByUsername2(String email)
+            throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User not found with email : " + email)
+        ); 
+        return  user ;
+    }
 
     @Transactional
     public UserDetails loadUserById(Long id) {

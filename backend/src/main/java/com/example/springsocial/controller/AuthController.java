@@ -46,32 +46,31 @@ public class AuthController {
 
     @Autowired
     private EmailSenderService emailSenderService;
-    
+
     @PostMapping("/login")
     // @RateLimit(name = "myEndpointLimit", fallbackMethod = "rateLimitFallback")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         UserDetails user = userDetailsService.loadUserByUsername(loginRequest.getEmail());
-        
+
         if (userDetailsService.isAccountVerified(user.getUsername()) == false) {
             throw new UserNotVerifiedException(user.getUsername() + " is not verified");
         }
-        
+        User user2 = userDetailsService.loadUserByUsername2(loginRequest.getEmail());
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = tokenProvider.createToken(authentication);
-
-        return ResponseEntity.ok(new AuthResponse(token));
+        System.out.println(ResponseEntity.ok(new AuthResponse(token, user2.getName(), 0, user2.getEmail().toString())));
+        return ResponseEntity.ok(new AuthResponse(token, user2.getName(), 0, user2.getEmail()));
 
     }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
-        System.out.println("deidine 5a9 mn houn"+signUpRequest.getAppUserRoles());
-System.out.println();
+        System.out.println("deidine 5a9 mn houn" + signUpRequest.getAppUserRoles());
         if (authService.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Account already exists on this mail Id.");
         }
@@ -90,17 +89,18 @@ System.out.println();
     public ResponseEntity<?> getMethodName(@RequestParam("token") String token) {
 
         ConfirmationToken confirmationToken = authService.findByConfirmationToken(token);
-        
+
         if (confirmationToken == null) {
             throw new BadRequestException("Invalid token");
         }
 
         User user = confirmationToken.getUser();
         Calendar calendar = Calendar.getInstance();
-        
-        if((confirmationToken.getExpiryDate().getTime() - 
+
+        if ((confirmationToken.getExpiryDate().getTime() -
                 calendar.getTime().getTime()) <= 0) {
-            return ResponseEntity.badRequest().body("Link expired. Generate new link from http:s//localhost:4200/login");
+            return ResponseEntity.badRequest()
+                    .body("Link expired. Generate new link from http:s//localhost:4200/login");
         }
 
         user.setEmailVerified(true);
@@ -109,10 +109,9 @@ System.out.println();
     }
 
     @PostMapping("/send-email")
-    public ResponseEntity<?> sendVerificationMail(@Valid @RequestBody 
-                        VerifyEmailRequest emailRequest) {
-        if(authService.existsByEmail(emailRequest.getEmail())){
-            if(userDetailsService.isAccountVerified(emailRequest.getEmail())){
+    public ResponseEntity<?> sendVerificationMail(@Valid @RequestBody VerifyEmailRequest emailRequest) {
+        if (authService.existsByEmail(emailRequest.getEmail())) {
+            if (userDetailsService.isAccountVerified(emailRequest.getEmail())) {
                 throw new BadRequestException("Email is already verified");
             } else {
                 User user = authService.findByEmail(emailRequest.getEmail());
@@ -123,12 +122,12 @@ System.out.println();
         } else {
             throw new BadRequestException("Email is not associated with any account");
         }
-    }  
-    
+    }
+
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@Valid @RequestBody LoginRequest loginRequest) {
-        if(authService.existsByEmail(loginRequest.getEmail())){
-            if(authService.changePassword(loginRequest.getEmail(), loginRequest.getPassword())) {
+        if (authService.existsByEmail(loginRequest.getEmail())) {
+            if (authService.changePassword(loginRequest.getEmail(), loginRequest.getPassword())) {
                 return ResponseEntity.ok(new ApiResponse(true, "Password changed successfully"));
             } else {
                 throw new BadRequestException("Unable to change password. Try again!");

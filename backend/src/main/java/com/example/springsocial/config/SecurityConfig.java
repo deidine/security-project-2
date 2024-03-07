@@ -1,7 +1,7 @@
 package com.example.springsocial.config;
  
 import org.springframework.core.env.Environment;
- 
+import org.springframework.http.HttpMethod;
 
 import com.example.springsocial.security.*;
 import com.example.springsocial.security.oauth2.CustomOAuth2UserService;
@@ -117,7 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers(env.getRequiredProperty("security.uri.white-list").split(",")).permitAll()
 
-                // .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
+                .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
                 .antMatchers("/auth/**",
                         "/oauth2/**", "/api/entite/mougatta",
                         "/api/entite/cities")

@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -58,8 +59,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(
                 oAuth2UserRequest.getClientRegistration().getRegistrationId(), oAuth2User.getAttributes());
           // Get roles attribute from OAuth2User
-        List<String> roles = (List<String>) oAuth2User.getAttributes().get("roles");
-     
+      
 
         if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
             if (oAuth2UserRequest.getClientRegistration().getRegistrationId().equalsIgnoreCase("github")) {
@@ -70,19 +70,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
             }
         }
-        // else  if (roles != null && !roles.isEmpty()) {
-        //     // Convert role strings to AppUserRole enum values
-        //     Set<GrantedAuthority> authorities = roles.stream()
-        //             .map(AppUserRole::valueOf)
-        //             .collect(Collectors.toSet());
-
-        //     // Add roles to OAuth2User
-        //     return new DefaultOAuth2User(authorities, oAuth2User.getAttributes(), "name");
-        // } else {
-        //     // Handle scenario where roles are missing or empty
-        //     throw new OAuth2AuthenticationProcessingException("User roles not found from OAuth2 provider");
-        // }
-
+        
         Optional<User> userOptional = userRepository.findByEmail(oAuth2UserInfo.getEmail());
         User user;
         if (userOptional.isPresent()) {
@@ -109,6 +97,10 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         user.setName(oAuth2UserInfo.getName());
         user.setEmail(oAuth2UserInfo.getEmail());
         user.setImageUrl(oAuth2UserInfo.getImageUrl());
+        //   
+        List<AppUserRole> roles = new ArrayList<>();
+        roles.add(AppUserRole.ROLE_CLIENT);
+        user.setAppUserRoles(roles);
         return userRepository.save(user);
     }
 

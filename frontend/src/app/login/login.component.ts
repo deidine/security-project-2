@@ -73,10 +73,14 @@ export class LoginComponent implements OnInit {
 
     this.loginService.login(this.loginInfo.email, this.loginInfo.password).subscribe(
       response => {
-        this.tokenStorage.saveToken(`Bearer ${response.accessToken}`);
-        
+           //dans session storage
+           this.tokenStorage.saveToken(`Bearer ${response.accessToken}`);
+           //dans local storage
+           this.tokenStorage.setAuthToken('Bearer ' + response.accessToken);
+           
         this.tokenStorage.saveUser(response);
-        // this.handleSuccessfulResponse(response)
+        console.log(response)
+        this.handleSuccessfulResponse(response)
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         // this.roles = this.tokenStorage.getUser().roles;

@@ -12,5 +12,5 @@ public class SpringSocialApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SpringSocialApplication.class, args);
 	}
-}
+} 
  
