@@ -1,6 +1,7 @@
 <!-- <div style="background: linear-gradient( #2b74bd ,rgb(183, 226, 243))"> -->
 <div>
   <div class="login-main-div" >
+    
     <app-social-login></app-social-login>
 
     <mat-card class="mat-card-aligner example-card" >
@@ -14,7 +15,7 @@
         <hr class="hr-border">
         
         <div *ngIf=loginFormError class="loginFormErrorDiv">
-            <h6 class="alert alert-danger">Invalid Credentials</h6>
+            <h6 class="alert alert-danger"> Identifiants invalides </h6>
         </div>
 
         <br>
@@ -57,7 +58,7 @@
 
           <div class="form-group">
             
-            <label>username</label>
+            <label>email</label>
             <input type="text" [class.is-invalid]="loginForm.get('ipusername').invalid
                     && loginForm.get('ipusername').touched"
                    [class.is-valid]="loginForm.get('ipusername').valid" 

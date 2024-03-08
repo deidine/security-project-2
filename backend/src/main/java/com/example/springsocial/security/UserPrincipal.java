@@ -16,13 +16,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserPrincipal implements OAuth2User, UserDetails {
-    private Long id;
+    private int id;
     private String email;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
-    public UserPrincipal(Long id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(int id, String email, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.email = email;
         this.password = password;
@@ -67,7 +67,7 @@ public class UserPrincipal implements OAuth2User, UserDetails {
         return userPrincipal;
     }
 
-    public Long getId() {
+    public int getId() {
         return id;
     }
 

@@ -29,6 +29,8 @@ import { RegisterComponent2 } from './oauth2/register/register.component';
 import { SocialLoginComponent } from './social-login/social-login.component';
 import { Oauth2Handler } from './social-login/oauth2handler';
 import { NotFoundComponent } from './social-login/not-found.component';
+import { usersComponent } from './users/users.component';
+import { LogoutComponent } from './login/LogoutComponent.component';
 // import { GetentiteByCategoryComponent } from './Entite/get-entite-by-category/get-entite-by-category.component';
 // import { UpdateEntiteComponent } from './Entite/update-entite/update-entite.component';
 
@@ -49,7 +51,7 @@ import { NotFoundComponent } from './social-login/not-found.component';
     PageNotFoundComponent,
     LoginComponentOauth2,
     RegisterComponent,
-    hover, 
+    hover, usersComponent,LogoutComponent
   ],
   imports: [
     BrowserModule,

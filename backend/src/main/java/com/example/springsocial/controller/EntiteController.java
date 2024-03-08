@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.MediaType;
 
 import com.example.springsocial.factory.EntiteFactory;
 import com.example.springsocial.model.City;
@@ -31,7 +32,9 @@ import java.util.List;
 @RestController
 // @CrossOrigin(origins = "https://localhost:4200")
 
-@RequestMapping("api/entite")
+@RequestMapping(value="api/entite",produces={MediaType.APPLICATION_JSON_VALUE})
+// @RequestMapping(value="api/entite",produces={MediaType.APPLICATION_JSON_VALUE},consumes ={MediaType.APPLICATION_JSON_VALUE} )
+
 public class EntiteController {
 
     private final IEntiteService service;
@@ -43,9 +46,9 @@ public class EntiteController {
         this.service = service;
     }
 
-//   @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_CLIENT')")
 
-    @PostMapping("save")
+    @PostMapping(value="save",consumes ={MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity<Entite> save(@RequestBody Entite entite, @RequestHeader HttpHeaders header) {
         Entite entiteReturned = null;
         System.out.println(entite.getEntiteName()+"deidine"+entite.getDepartments());
@@ -77,7 +80,8 @@ public class EntiteController {
 
     @DeleteMapping("delete/{EntiteId}")
     public ResponseEntity<Void> deleteById(@PathVariable Integer EntiteId) {
-        service.deleteById(EntiteId);
+        System.out.println("deleteing entite"+EntiteId);
+        entiterepository.deleteById(EntiteId);
         return ResponseEntity.noContent().build();
     }
 

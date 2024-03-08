@@ -1,15 +1,19 @@
 package com.example.springsocial.payload;
 
+import java.util.List;
+
+import com.example.springsocial.model.AppUserRole;
+
 public class AuthResponse {
     private String accessToken;
     private String tokenType = "Bearer";
-    private int id;
+    private List<AppUserRole> roles;
     private String email, username;
 
-    public AuthResponse(String accessToken, String username, int id, String email) {
+    public AuthResponse(String accessToken, String username, List<AppUserRole> roles, String email) {
         this.accessToken = accessToken;
         this.username = username;
-        this.id = id;
+        this.roles = roles;
         this.email = email;
 
     }
@@ -18,8 +22,8 @@ public class AuthResponse {
         return username;
     }
 
-    public int getId( ) {
-        return id;
+    public List<AppUserRole> getRoles( ) {
+        return roles;
     }
 
     public String getEmail( ) {
@@ -34,8 +38,8 @@ public class AuthResponse {
         this.email = email;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setId(List<AppUserRole> roles) {
+        this.roles = roles;
     }
 
     public String getAccessToken() {

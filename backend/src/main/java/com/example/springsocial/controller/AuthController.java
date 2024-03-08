@@ -1,21 +1,30 @@
 package com.example.springsocial.controller;
 
 import com.example.springsocial.exception.BadRequestException;
+import com.example.springsocial.exception.ResourceNotFoundException;
 import com.example.springsocial.exception.UserNotVerifiedException;
 import com.example.springsocial.model.ConfirmationToken;
+import com.example.springsocial.model.Entite;
 import com.example.springsocial.model.User;
 import com.example.springsocial.payload.ApiResponse;
 import com.example.springsocial.payload.AuthResponse;
 import com.example.springsocial.payload.LoginRequest;
 import com.example.springsocial.payload.SignUpRequest;
 import com.example.springsocial.payload.VerifyEmailRequest;
+import com.example.springsocial.repository.UserRepository;
+import com.example.springsocial.security.CurrentUser;
 import com.example.springsocial.security.CustomUserDetailsService;
 import com.example.springsocial.security.TokenProvider;
+import com.example.springsocial.security.UserPrincipal;
 import com.example.springsocial.service.AuthService;
 import com.example.springsocial.service.EmailSenderService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,9 +36,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Calendar;
+import java.util.List;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(value = "/auth", produces = { MediaType.APPLICATION_JSON_VALUE })
+// @RequestMapping(value="api/entite",produces={MediaType.APPLICATION_JSON_VALUE},consumes
+// ={MediaType.APPLICATION_JSON_VALUE} )
+
 public class AuthController {
 
     @Autowired
@@ -63,8 +79,10 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = tokenProvider.createToken(authentication);
-        System.out.println(ResponseEntity.ok(new AuthResponse(token, user2.getName(), 0, user2.getEmail().toString())));
-        return ResponseEntity.ok(new AuthResponse(token, user2.getName(), 0, user2.getEmail()));
+        log.info("  user login"+loginRequest.toString());
+        log.info("login");
+    
+        return ResponseEntity.ok(new AuthResponse(token, user2.getName(), user2.getAppUserRoles(), user2.getEmail()));
 
     }
 
@@ -81,7 +99,7 @@ public class AuthController {
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/me")
                 .buildAndExpand(user.getId()).toUri();
-
+        log.info("usere enrgisetre");
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));
     }
 
@@ -143,4 +161,26 @@ public class AuthController {
         return "rate limite";
     }
 
+    @Autowired
+    UserRepository userRepository;
+
+    @GetMapping("/users")
+    // @Secured("ROLE_ADMIN")
+    // @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<User>> getCurrentUser() {
+        log.info("show user to front");
+
+        List<User> users = userRepository.findAll();
+        return ResponseEntity.ok(users);
+    }
+
+    @DeleteMapping("delete/{userId}")
+    // @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<Void> delete(@PathVariable String userId) {
+        System.out.println("deleting user" + userId);
+        User user = userRepository.getById(Integer.parseInt(userId));
+        userRepository.delete(user);
+        System.out.println("deideine deleted");
+        return ResponseEntity.noContent().build();
+    }
 }

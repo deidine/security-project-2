@@ -66,11 +66,12 @@
 			<artifactId>totp-spring-boot-starter</artifactId>
 			<version>1.7.1</version>
 		</dependency>
-		<dependency>
+		<!-- from my project then it's working. I guess if we add this dependency spring will automatically convert the repose into xml -->
+		<!-- <dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-guava</artifactId>
 			<version>2.14.2</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<!-- Generate beautiful documentation from a Swagger-compliant API. -->
 			<groupId>io.springfox</groupId>

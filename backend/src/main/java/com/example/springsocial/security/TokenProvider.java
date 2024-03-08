@@ -33,11 +33,14 @@ public class TokenProvider {
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
-
+        Date expiryDate = new Date(now.getTime() +3600000 + appProperties.getAuth().getTokenExpirationMsec());
+        // Date now = new Date();
+        // // Set expiration date to one day (24 hours) from the current time
+        // Date expiryDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    
         // Generate a secure key for HS512 algorithm
         // Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-      
+      System.out.println(expiryDate.getTime()+"expire date ");
         return Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .setIssuedAt(new Date())
@@ -46,7 +49,7 @@ public class TokenProvider {
                 .compact();
     }
 
-    public Long getUserIdFromToken(String token) {
+    public int getUserIdFromToken(String token) {
         
         Claims claims = Jwts.parser()
         
@@ -54,7 +57,7 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return Long.parseLong(claims.getSubject());
+        return Integer.parseInt(claims.getSubject());
     }
 
     public boolean validateToken(String authToken) {

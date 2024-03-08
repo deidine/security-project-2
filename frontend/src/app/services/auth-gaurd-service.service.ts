@@ -5,22 +5,21 @@ import { AuthenticatorService } from '../login/services/authenticator.service';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthGaurdService implements CanActivate{
-  
+export class AuthGaurdService implements CanActivate {
+
   constructor(private router: Router,
-              private authService: AuthenticatorService) { }
+    private authService: AuthenticatorService) { }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (this.authService.isUserLoggedIn() )
-      {
-         return true;
-      }
+    if (this.authService.isUserLoggedIn()) {
+      return true;
+    }
 
     this.router.navigate(['']);
     return false;
 
   }
- 
+
 
 
 }

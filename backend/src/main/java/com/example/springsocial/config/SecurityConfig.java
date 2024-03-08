@@ -1,15 +1,16 @@
 package com.example.springsocial.config;
- 
+
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 
 import com.example.springsocial.security.*;
 import com.example.springsocial.security.oauth2.CustomOAuth2UserService;
 import com.example.springsocial.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.example.springsocial.security.oauth2.OAuth2AuthenticationFailureHandler;
 import com.example.springsocial.security.oauth2.OAuth2AuthenticationSuccessHandler;
- 
-import org.springframework.beans.factory.annotation.Autowired; 
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -72,8 +75,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-   
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -118,6 +119,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(env.getRequiredProperty("security.uri.white-list").split(",")).permitAll()
 
                 .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
+                .antMatchers(HttpMethod.GET, "/auth/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/**/entite/delete/*").hasRole("ADMIN")
                 .antMatchers("/auth/**",
                         "/oauth2/**", "/api/entite/mougatta",
                         "/api/entite/cities")
@@ -186,5 +189,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // .limitRefreshPeriod(Duration.ofMinutes(1)); // Duration for the rate limit
     // window
     // }
-    
+
 }

@@ -13,6 +13,8 @@ export class HttpIntercpterService implements HttpInterceptor {
     
     let authToken = this.oauthService.getAuthToken();
     if(authToken != null) {
+      alert("deidine")
+
       req = req.clone({
         setHeaders: {
           Authorization: authToken

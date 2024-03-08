@@ -65,9 +65,7 @@ export class EntiteService {
   deleteEntite(EntiteId: any): Observable<any> {
     return this.httpClient.delete<any>(`${environment.apiURL}/entite/delete/${EntiteId}`, {
       headers: new HttpHeaders(
-        {
-          'Authorization': window.sessionStorage.getItem('auth-token')
-        }
+        {    'Authorization': window.sessionStorage.getItem('auth-token') }
       )
     });
   }

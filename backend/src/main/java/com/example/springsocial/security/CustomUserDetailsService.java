@@ -22,7 +22,6 @@ public class  CustomUserDetailsService implements UserDetailsService {
     UserRepository userRepository;
 
     @Override
-    @Transactional
     public UserDetails loadUserByUsername(String email)
             throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
@@ -31,7 +30,6 @@ public class  CustomUserDetailsService implements UserDetailsService {
         ); 
         return UserPrincipal.create(user,user.getAppUserRoles());
     }
-    @Transactional
     public User loadUserByUsername2(String email)
             throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
@@ -41,8 +39,7 @@ public class  CustomUserDetailsService implements UserDetailsService {
         return  user ;
     }
 
-    @Transactional
-    public UserDetails loadUserById(Long id) {
+    public UserDetails loadUserById(int id) {
         User user = userRepository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("User", "id", id)
         );
@@ -50,7 +47,13 @@ public class  CustomUserDetailsService implements UserDetailsService {
         return UserPrincipal.create(user,user.getAppUserRoles());
     }
 
-    @Transactional
+    // @Transactional  
+    public List<User> findUsers( ) {
+        List<User> users = userRepository.findAll();
+       
+        return  users;
+    }
+
     public boolean isAccountVerified(String email) {
         boolean isVerified = userRepository.findEmailVerifiedByEmail(email);
         return isVerified;

@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 
 public class CookieUtils {
 
@@ -15,6 +17,8 @@ public class CookieUtils {
         if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
+        log.info("cookes name"+cookie.getName());
+
                     return Optional.of(cookie);
                 }
             }

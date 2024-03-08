@@ -18,7 +18,8 @@ import java.net.URI;
 import java.util.Optional;
 
 import static com.example.springsocial.security.oauth2.HttpCookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Component
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
@@ -57,13 +58,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
             throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
-
+      
+                log.info("preincipale information"+authentication.getPrincipal());
+        
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
-
+        authentication.getPrincipal();
         String token = tokenProvider.createToken(authentication);
 
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("token", token)
+                .queryParam("user", authentication.getPrincipal())
                 .build().toUriString();
     }
 

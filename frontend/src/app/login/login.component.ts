@@ -17,7 +17,7 @@ export class LoginComponent implements OnInit {
 
   //  loginDetails = new LoginDetails('','');
 
-
+  errorl=''
   loading = false;
   submitted = false;
   returnUrl: string;
@@ -72,29 +72,40 @@ export class LoginComponent implements OnInit {
 
 
     this.loginService.login(this.loginInfo.email, this.loginInfo.password).subscribe(
-      response => {
-           //dans session storage
-           this.tokenStorage.saveToken(`Bearer ${response.accessToken}`);
-           //dans local storage
-           this.tokenStorage.setAuthToken('Bearer ' + response.accessToken);
-           
+      (response: any) => {
+        // If the response is successful
+        // Save token and user information
+        this.tokenStorage.saveToken(`Bearer ${response.accessToken}`);
+        this.tokenStorage.setAuthToken('Bearer ' + response.accessToken);
         this.tokenStorage.saveUser(response);
-        console.log(response)
-        this.handleSuccessfulResponse(response)
+        console.log(response);
+        this.handleSuccessfulResponse(response);
         this.isLoginFailed = false;
         this.isLoggedIn = true;
-        // this.roles = this.tokenStorage.getUser().roles;
-        this.reloadPage();
+    
+        // Check user role and navigate accordingly
+        if (response.roles.includes("ROLE_CLIENT")) {
+          this.forward("/getallentite");
+        } else if (response.roles.includes("ROLE_ADMIN")) {
+          this.forward("/users");
+        } else {
+          // Handle other roles or unexpected responses
+          alert("Unknown role received: " + response.roles);
+        }
       },
-      err => {
-        this.handleSuccessfulResponse(err)
-
-        // this.reloadPage();
+      (error: any) => {
+        // If there's an error in the response
+        // this.handleErrorResponse(error);
+        this.loginFormError=true
+        this.errorl=error
+        console.log("Error:", error);
+        // this.forward('');
       }
     );
+    
   }
-  reloadPage(): void {
-    window.location.reload();
+  forward(url): void {
+    window.location.href=url;
   }
   onSubmit() {
 

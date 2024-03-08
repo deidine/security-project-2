@@ -5,11 +5,11 @@ import { stringify } from '@angular/compiler/src/util';
 import { Observable } from 'rxjs';
 import { UserProfile } from 'src/app/models/UserModels';
 import { environment } from 'src/environments/environment';
- 
+
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
- 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,42 +24,69 @@ export class LoginCheckService {
   login(email: string, password: string): Observable<any> {
     console.log("Call to backend method to check userEmail and password " + email);
 
-    return this.httpClient.post<LoginInfo>( `${environment.authURL}/auth/login`,
+    return this.httpClient.post<LoginInfo>(`${environment.authURL}/auth/login`,
       {
         email,
         password
       }, httpOptions);
   }
- 
 
- 
-  register(name: string, password: string, email: string,appUserRoles:string[]): Observable<any> {
+
+
+  register(name: string, password: string, email: string, appUserRoles: string[]): Observable<any> {
     console.log("Call to backend method to check userEmail and password " + name);
-     return this.httpClient.post<RrgisterInfo>(`${environment.authURL}/auth/signup`,
+    return this.httpClient.post<RrgisterInfo>(`${environment.authURL}/auth/signup`,
       {
         name,
         password,
-         email ,  appUserRoles
+        email, appUserRoles
       }, httpOptions);
   }
-  
-  getUserDetails(userId)
-  {
-    let id : number = parseInt(userId);
-    console.log("Call to backend method to get current user Details with id "+id );
-    
-    let param = new HttpParams();
-    param = param.set('userId',userId);
 
-    let url = `${environment.authURL}/users/users/`+userId;
+  deleteUser(userId) {
+    let id: number = parseInt(userId);
+    console.log("Call to backend method to get current user Details with id " + id);
+
+    let param = new HttpParams();
+    param = param.set('userId', userId);
+
+    let url = `${environment.authURL}/auth/delete/` + userId;
+
+    return this.httpClient.delete<UserProfile>(url);
+  }
+
+  getUserDetails(userId) {
+    let id: number = parseInt(userId);
+    console.log("Call to backend method to get current user Details with id " + id);
+
+    let param = new HttpParams();
+    param = param.set('userId', userId);
+
+    let url = `${environment.authURL}/users/users/` + userId;
 
     return this.httpClient.get<UserProfile>(url);
   }
 
 
+  getUsers() {
+
+
+    let url = `${environment.authURL}/auth/users/`;
+
+    return this.httpClient.get<UserProfile>(url
+      , {
+        headers: new HttpHeaders(
+          {
+            'Authorization': window.sessionStorage.getItem('auth-token')
+          }
+        )
+      }
+      );
+  }
+
 }
 
- 
+
 
 
 export class UserInfo {
@@ -93,5 +120,5 @@ export class RrgisterInfo {
   username: string;
   password: string;
   email: string;
-  appUserRoles:string[];
+  appUserRoles: string[];
 }

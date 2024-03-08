@@ -1,0 +1,133 @@
+<!-- Header Toolbar -->
+
+<header> 
+
+
+<!-- Central Containt -->
+<div class="content-div">
+
+  <!-- SideBar List -->
+  <div>
+
+    <sidenavbar></sidenavbar>
+
+  </div>
+
+  <!-- Main Grid -->
+
+  <div class='content-card'>
+
+
+
+
+    <div class="content-div">
+
+
+      <h5 style="text-align: left">users List
+ 
+      </h5>
+      <hr class="hr-silver">
+
+ 
+      <!-- Mat Table for retailer list  -->
+
+      <table #table style="max-height: 100px; overflow: auto;" mat-table [dataSource]="users"
+        style="width: 96%; margin: 2%; margin-bottom: 2%" class="mat-elevation-z8" matSort>
+
+
+        <ng-container matColumnDef="id">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Id </mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.id}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> email </mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.email}} </mat-cell>
+        </ng-container>
+
+
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> name   </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.name}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="imageUrl">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> imageUrl </mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <ng-container *ngIf="element.imageUrl; else defaultAvatar">
+              <img [src]="element.imageUrl" alt="Avatar" style="width: 50px; height: 50px;">
+            </ng-container>
+            <ng-template #defaultAvatar>
+              <!-- Default image -->
+              <img src="assets/from_s.png" alt="Default Avatar" style="width: 50px; height: 50px;">
+            </ng-template>
+          </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="provider">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> provider   </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.provider}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="appUserRoles">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> appUserRoles   </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.appUserRoles}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="emailVerified">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> emailVerified   </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.emailVerified}}</mat-cell>
+        </ng-container>
+
+<!-- 
+        <ng-container matColumnDef="usersName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> users Name </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.usersName}} </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="usersEntite">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> users entite </mat-header-cell>
+          <mat-cell *matCellDef="let element"> {{element.entite.entiteName}} </mat-cell>
+        </ng-container> -->
+
+
+        <ng-container matColumnDef="edit">
+          <mat-header-cell *matHeaderCellDef mat-sort-header> Edit users </mat-header-cell>
+          <mat-cell (click)=editusers(element) style="cursor: pointer" title="Edit users Details"
+            *matCellDef="let element">
+            <a>
+              <i class="material-icons">
+                border_color
+              </i>
+            </a>
+            <!-- &nbsp; delete users -->
+          </mat-cell>
+
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          
+          <mat-header-cell *matHeaderCellDef mat-sort-header> delete users </mat-header-cell>
+          <mat-cell (click)=deleteusers(element) style="cursor: pointer" title="delete users  "
+            *matCellDef="let element">
+            <a>
+              <mat-icon>delete</mat-icon>
+
+            </a>
+            <!-- &nbsp; delete users -->
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns;sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+
+      </table>
+      <mat-paginator #paginator [pageIndex]="0" [pageSize]="10" [pageSizeOptions]=[5,10] showFirstLastButtons="true">
+
+      </mat-paginator>
+
+
+      <div style="margin-top: 2%"> &nbsp; </div>
+
+
+    </div>
+
+
+  </div>
+
+</div></header>
