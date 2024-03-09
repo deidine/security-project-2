@@ -73,7 +73,7 @@ export class usersComponent implements OnInit {
 
   handleSuccessfulResponse(response) {
     this.user = response;
-    this.userName = this.user.username;
+    this.userName = this.user.name;
 
   }
 

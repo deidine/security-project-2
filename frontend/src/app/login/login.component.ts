@@ -39,17 +39,18 @@ export class LoginComponent implements OnInit {
   isLoggedIn = false;
   isLoginFailed = false;
   displayModal: boolean = false;
+  displayModal2: boolean = false;
   modalData: any;
   modalData2: any;
   display: any;
   ngOnInit() {
     this.modalData = {
       type: 'reset', //verify or 'reset'
-      btn: 'Send link' // Initial button text
+      btn: 'Send otp' // Initial button text
     };
     this.modalData2 = {
       type: 'verify', //verify or 'reset'
-      btn: 'Send link' // Initial button text
+      btn: 'Send token & link' // Initial button text
     };
 
     this.authenticateService.checkLogin();
@@ -130,12 +131,16 @@ export class LoginComponent implements OnInit {
   }
   toggleModal() {
     this.displayModal = !this.displayModal;
+  }  toggleModal2() {
+    this.displayModal2 = !this.displayModal2;
   }
 
   handleModalEvent(event: any) {
     this.displayModal = event;
   }
 
+  handleModalEvent2(event: any) {
+    this.displayModal2 = event;
+  }
+
 }
-
-

@@ -1,4 +1,3 @@
- import { Departement } from '../../models/department';
 import { MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, ErrorHandler } from '@angular/core';
@@ -8,6 +7,7 @@ import { DepartementService } from '../../services/department.service';
 import { UserProfile } from 'src/app/models/UserModels';
 import { LoginCheckService } from 'src/app/login/services/login-check.service';
 import { EntiteService } from 'src/app/Entite/services/entite.service';
+import { Departement } from '../../models/department';
 
 @Component({
   selector: 'edit-product',
@@ -63,12 +63,14 @@ this.id=this.route.queryParams['getValue']()['departmentId']
     );
 
 
-  }
+  } 
+
+
 
   handleSuccessfulResponse(response) {
     this.myProfile = response;
-    this.userName = this.myProfile.username;
-  }
+    this.userName = this.myProfile.name;
+  } 
 
   onClickProfile() {
     this.router.navigate(['/my_profile']);

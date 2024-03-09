@@ -61,7 +61,7 @@ export class VerifyLinkModalComponent implements OnInit {
     this.clearFormValues();
     this.displayForm = false;
     this.eventDisplay.emit(this.display);
-    window.location.href = ''
+    window.location.href=''
   }
 
   onSubmit() {
@@ -161,5 +161,5 @@ export class VerifyLinkModalComponent implements OnInit {
   toggleModal() {
     this.display2 = !this.display2;
   }
-
+  
 }

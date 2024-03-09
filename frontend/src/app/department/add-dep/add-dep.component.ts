@@ -55,7 +55,7 @@ export class AddDepComponent implements OnInit {
       
       handleSuccessfulResponse(response) {
         this.myProfile = response;
-        this.userName = this.myProfile.username;
+        this.userName = this.myProfile.name;
       }
       
       onClickProfile() {

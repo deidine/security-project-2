@@ -67,7 +67,7 @@ this.id=this.route.queryParams['getValue']()['departmentId']
 
   handleSuccessfulResponse(response) {
     this.myProfile = response;
-    this.userName = this.myProfile.username;
+    this.userName = this.myProfile.name;
   }
 
   onClickProfile() {
