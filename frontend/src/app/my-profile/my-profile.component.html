@@ -1,23 +1,15 @@
-<div>
-  <button (click)="toggleModal()">Open Modal</button>
-  <app-verify-link-modal 
-    [display]="displayModal"
-    [modalData]="modalData"
-    (eventDisplay)="handleModalEvent($event)">
-  </app-verify-link-modal>
-</div>
 
 <!-- Header Toolbar -->
 
 <mat-toolbar style="background: linear-gradient( #2b74bd ,rgb(183, 226, 243) )" class="header-toolbar">
-
-        <mat-toolbar-row>
-          <!-- <h6>DiMS</h6> -->
-          
-          <img height="90%" routerLink="" title="DiMS" src="assets/images/Dims cropped.png">
-          
-          <span class="toolbar-row-spacer"></span>
-          
+  
+  <mat-toolbar-row>
+    <!-- <h6>DiMS</h6> -->
+    
+    <img height="90%" routerLink="" title="DiMS" src="assets/images/Dims cropped.png">
+    
+    <span class="toolbar-row-spacer"></span>
+    
           <mat-icon class="toolbar-row-icon" 
                     aria-hidden="false"
                     (click)="onClickProfile()"
@@ -37,12 +29,12 @@
 </mat-toolbar>
   
   
-  <!-- Central Containt -->
-  <div class="content-div">
+<!-- Central Containt -->
+<div class="content-div">
   
-    <!-- SideBar List -->
-    <sidenavbar></sidenavbar>
-  
+  <!-- SideBar List -->
+  <sidenavbar></sidenavbar>
+    
   <!-- Main Grid -->
   
     <div class='content-card' >
@@ -56,7 +48,15 @@
 
       <h5 style="text-align: left"> My Profile</h5>  
       <hr class="hr-silver">
-     
+      <div>
+        <button (click)="toggleModal()">Open Modal</button>
+        <app-verify-link-modal 
+          [display]="displayModal"
+          [modalData]="modalData"
+          (eventDisplay)="handleModalEvent($event)">
+        </app-verify-link-modal>
+      </div>
+    
 <div style="margin :5%">
 
  
