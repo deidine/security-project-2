@@ -1,4 +1,3 @@
-import { VerifyLinkModalComponent } from '../verify-link-modal/verify-link-modal.component';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -41,13 +40,9 @@ export class MyProfileComponent implements OnInit {
     private myProfileUpdater: UserService,
     private router: Router,
     private snackBar: MatSnackBar) { }
-    displayModal: boolean = false;
-    modalData: any;
+     
     ngOnInit() { 
-        this.modalData = {
-          type: 'reset', //verify or 'reset'
-          btn: 'Send link' // Initial button text
-        };
+       
       this.starter(); 
       console.log("cleared User deidine Id " + localStorage.getItem("auth-user"));
       console.log("user tokekne "+localStorage.getItem("UserToken"))
@@ -172,12 +167,5 @@ export class MyProfileComponent implements OnInit {
 
   }
 
-  toggleModal() {
-    this.displayModal = !this.displayModal;
-  }
-
-  handleModalEvent(event: any) {
-    this.displayModal = event;
-  }
-
+  
 }

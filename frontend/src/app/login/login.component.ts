@@ -1,7 +1,8 @@
+import { VerifyLinkModalComponent } from '../verify-link-modal/verify-link-modal.component';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
- import { TokenStorageService } from './services/token-storage.service';
+import { TokenStorageService } from './services/token-storage.service';
 
 import { LoginCheckService, UserInfo, LoginInfo } from './services/login-check.service';
 import { AuthenticatorService } from './services/authenticator.service';
@@ -17,11 +18,11 @@ export class LoginComponent implements OnInit {
 
   //  loginDetails = new LoginDetails('','');
 
-  errorl=''
+  errorl = ''
   loading = false;
   submitted = false;
   returnUrl: string;
-   loginFormError = false;
+  loginFormError = false;
 
   loginInfo: LoginInfo = new LoginInfo();
   user: UserInfo = new UserInfo();
@@ -37,8 +38,19 @@ export class LoginComponent implements OnInit {
   ) { }
   isLoggedIn = false;
   isLoginFailed = false;
-
+  displayModal: boolean = false;
+  modalData: any;
+  modalData2: any;
+  display: any;
   ngOnInit() {
+    this.modalData = {
+      type: 'reset', //verify or 'reset'
+      btn: 'Send link' // Initial button text
+    };
+    this.modalData2 = {
+      type: 'verify', //verify or 'reset'
+      btn: 'Send link' // Initial button text
+    };
 
     this.authenticateService.checkLogin();
     if (this.tokenStorage.getToken()) {
@@ -49,7 +61,7 @@ export class LoginComponent implements OnInit {
 
   loginForm: FormGroup = this.fb.group({
     ipusername: ['', [Validators.required]],
-     ipPassword: ['', [Validators.required, Validators.minLength(5)]]
+    ipPassword: ['', [Validators.required, Validators.minLength(5)]]
 
   });
 
@@ -57,7 +69,7 @@ export class LoginComponent implements OnInit {
 
   handleSuccessfulResponse(response) {
     this.user = response;
-     this.userStorage = this.tokenStorage.getUser()
+    this.userStorage = this.tokenStorage.getUser()
     localStorage.setItem("currentUserId", JSON.stringify(this.userStorage.id));
     localStorage.setItem("currentUserEmail", JSON.stringify(this.userStorage.email));
     localStorage.setItem("currentUserRole", JSON.stringify(this.userStorage.roles));
@@ -82,7 +94,7 @@ export class LoginComponent implements OnInit {
         this.handleSuccessfulResponse(response);
         this.isLoginFailed = false;
         this.isLoggedIn = true;
-    
+
         // Check user role and navigate accordingly
         if (response.roles.includes("ROLE_CLIENT")) {
           this.forward("/getallentite");
@@ -96,16 +108,16 @@ export class LoginComponent implements OnInit {
       (error: any) => {
         // If there's an error in the response
         // this.handleErrorResponse(error);
-        this.loginFormError=true
-        this.errorl=error
+        this.loginFormError = true
+        this.errorl = error
         console.log("Error:", error);
         // this.forward('');
       }
     );
-    
+
   }
   forward(url): void {
-    window.location.href=url;
+    window.location.href = url;
   }
   onSubmit() {
 
@@ -115,6 +127,13 @@ export class LoginComponent implements OnInit {
       this.loginFormError = true;
     }
 
+  }
+  toggleModal() {
+    this.displayModal = !this.displayModal;
+  }
+
+  handleModalEvent(event: any) {
+    this.displayModal = event;
   }
 
 }
