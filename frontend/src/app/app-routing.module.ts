@@ -22,10 +22,12 @@ import { NotFoundComponent } from './social-login/not-found.component';
 import { usersComponent } from './users/users.component';
 import { AdminGuard } from './services/admin-guard.service';
 import { LogoutComponent } from './login/LogoutComponent.component';
+import { VerifyLinkModalComponent } from './verify-link-modal/verify-link-modal.component';
 
 export const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
 const routes: Routes = [
+  {path: "verify-link",component:VerifyLinkModalComponent},
   { path: "", component: LoginComponent },
   { path: 'oauth2/redirect', component: Oauth2Handler },
   { path: 'externalRedirect', canActivate:   [externalUrlProvider], component: NotFoundComponent },

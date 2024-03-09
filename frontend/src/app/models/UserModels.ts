@@ -1,6 +1,6 @@
  
 export class UserProfile{
-    username: string;
+    name: string;
     password: string;
     email: string;
     contactno: string;

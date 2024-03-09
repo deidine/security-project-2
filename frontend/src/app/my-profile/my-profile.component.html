@@ -1,4 +1,11 @@
-
+<div>
+  <button (click)="toggleModal()">Open Modal</button>
+  <app-verify-link-modal 
+    [display]="displayModal"
+    [modalData]="modalData"
+    (eventDisplay)="handleModalEvent($event)">
+  </app-verify-link-modal>
+</div>
 
 <!-- Header Toolbar -->
 

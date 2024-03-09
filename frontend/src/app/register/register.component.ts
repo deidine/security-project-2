@@ -14,7 +14,7 @@ import { MatSnackBar } from '@angular/material';
 })
 
 export class RegisterComponent implements OnInit {
-
+ 
   //  loginDetails = new LoginDetails('','');
 
 
@@ -42,7 +42,7 @@ export class RegisterComponent implements OnInit {
 
   isLoginFailed = false;
   ngOnInit() {
-
+    
     // this.authenticateService.checkLogin();
     // if (this.tokenStorage.getToken()) {
     //   this.isLoggedIn = true;
@@ -114,7 +114,7 @@ export class RegisterComponent implements OnInit {
 
     this.validateSubmit();
   }
-
+ 
 }
 
 

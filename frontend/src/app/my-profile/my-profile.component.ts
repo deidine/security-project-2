@@ -1,3 +1,4 @@
+import { VerifyLinkModalComponent } from '../verify-link-modal/verify-link-modal.component';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -19,7 +20,7 @@ export class MyProfileComponent implements OnInit {
 
   public updateDetails: UserProfile = new UserProfile();
 
-  public username = " ";
+  public name = " ";
   public myProfile: UserProfile;
 
   public profileForm: FormGroup = this.fb.group({
@@ -40,8 +41,13 @@ export class MyProfileComponent implements OnInit {
     private myProfileUpdater: UserService,
     private router: Router,
     private snackBar: MatSnackBar) { }
-    
-    ngOnInit() {
+    displayModal: boolean = false;
+    modalData: any;
+    ngOnInit() { 
+        this.modalData = {
+          type: 'reset', //verify or 'reset'
+          btn: 'Send link' // Initial button text
+        };
       this.starter(); 
       console.log("cleared User deidine Id " + localStorage.getItem("auth-user"));
       console.log("user tokekne "+localStorage.getItem("UserToken"))
@@ -49,23 +55,23 @@ export class MyProfileComponent implements OnInit {
   }
 
   starter() {
-    this.activeSidePanel();
+    // this.activeSidePanel();
     this.getProfile();
   }
-  activeSidePanel() {
-    let userRole = localStorage.getItem("currentUserRole");
+  // activeSidePanel() {
+  //   let userRole = localStorage.getItem("currentUserRole");
 
-    if (userRole === '1') {
-      this.adminSidepanel = true;
-    }
-    else if (userRole === '2') {
-      this.distributorSidePanel = true;
-    }
-    else if (userRole === '3') {
-      this.retailerSidePanel = true;
-    }
+  //   if (userRole === '1') {
+  //     this.adminSidepanel = true;
+  //   }
+  //   else if (userRole === '2') {
+  //     this.distributorSidePanel = true;
+  //   }
+  //   else if (userRole === '3') {
+  //     this.retailerSidePanel = true;
+  //   }
 
-  }
+  // }
 
 
   onClickProfile() {
@@ -90,7 +96,7 @@ export class MyProfileComponent implements OnInit {
 
   getProfile() {
     let id: any = localStorage.getItem("currentUserId"); 
-    this.username = localStorage.getItem("currentUserName");
+    this.name = localStorage.getItem("entUserName");
     console.log("User Id is " + id);
 
     this.userProfileService.getUserDetails(id).subscribe(
@@ -104,11 +110,11 @@ export class MyProfileComponent implements OnInit {
 
   handleSuccessfulResponse(response) {
     this.myProfile = response;
-    this.username = this.myProfile.username;
+    this.name = this.myProfile.name;
 
 
     this.profileForm.patchValue({
-      profileName: this.myProfile.username,
+      profileName: this.myProfile.name,
       profileEmail: this.myProfile.email,
       profileContact: this.myProfile.contactno,
       profilePassword: "************",
@@ -122,7 +128,7 @@ export class MyProfileComponent implements OnInit {
 
     console.log("Updated user profile with new details");
 
-    this.updateDetails.username = this.f.profileName.value;
+    this.updateDetails.name = this.f.profileName.value;
     this.updateDetails.email = this.f.profileEmail.value;
     this.updateDetails.contactno = this.f.profileContact.value;
     this.updateDetails.password = this.f.profilePassword.value;
@@ -131,7 +137,7 @@ export class MyProfileComponent implements OnInit {
 
     this.myProfileUpdater.updateMyProfile(this.updateDetails).subscribe(
       response => {
-        localStorage.setItem("currentusername", this.updateDetails.username);
+        localStorage.setItem("entusername", this.updateDetails.name);
         this.snackBar.open("Profile Updated", "Close", {
           duration: 2000, verticalPosition: 'top', panelClass: ['green-snackbar']
         });
@@ -166,5 +172,12 @@ export class MyProfileComponent implements OnInit {
 
   }
 
+  toggleModal() {
+    this.displayModal = !this.displayModal;
+  }
+
+  handleModalEvent(event: any) {
+    this.displayModal = event;
+  }
 
 }

@@ -64,7 +64,14 @@ export class LoginCheckService {
 
     let url = `${environment.authURL}/users/users/` + userId;
 
-    return this.httpClient.get<UserProfile>(url);
+    return this.httpClient.get<UserProfile>(url, {
+      headers: new HttpHeaders(
+        {
+          'Authorization': window.sessionStorage.getItem('auth-token')
+        }
+      )
+    }
+    );
   }
 
 

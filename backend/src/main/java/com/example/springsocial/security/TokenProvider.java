@@ -39,8 +39,7 @@ public class TokenProvider {
         // Date expiryDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
     
         // Generate a secure key for HS512 algorithm
-        // Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-      System.out.println(expiryDate.getTime()+"expire date ");
+        // Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512); 
         return Jwts.builder()
                 .setSubject(Long.toString(userPrincipal.getId()))
                 .setIssuedAt(new Date())

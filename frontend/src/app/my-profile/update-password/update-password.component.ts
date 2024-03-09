@@ -49,7 +49,7 @@ export class UpdatePasswordComponent implements OnInit {
   }
 
   starter(){
-    this.activeSidePanel();
+    // this.activeSidePanel();
   }
 
   activeSidePanel(){
