@@ -16,6 +16,10 @@ import { MatSnackBar } from '@angular/material';
 export class RegisterComponent implements OnInit {
  
   //  loginDetails = new LoginDetails('','');
+  isUsing2FA = false;
+  qrCodeImage = '';
+  isSuccessful = false;
+  public isChecked = false;
 
 
   loading = false;
@@ -64,18 +68,7 @@ export class RegisterComponent implements OnInit {
 
   get f() { return this.loginForm.controls; }
 
-  handleSuccessfulResponse(response) {
-    this.user = response;
-    this.user = response;
-     this.userStorage = this.tokenStorage.getUser()
-    localStorage.setItem("currentUserId", JSON.stringify(this.userStorage.id));
-    localStorage.setItem("currentUserEmail", JSON.stringify(this.userStorage.email));
-    localStorage.setItem("currentUserRole", JSON.stringify(this.userStorage.roles));
-    localStorage.setItem("currentUserName", (this.userStorage.username));
-    localStorage.setItem("UserToken", (this.tokenStorage.getToken()));
-
-        this.router.navigate(['/login']);
-      }
+  
  
       role:any;
 
@@ -88,16 +81,21 @@ export class RegisterComponent implements OnInit {
     this.registerInfo.password = this.f.ipPassword.value;
 
     this.registerInfo.appUserRoles=["ROLE_CLIENT"];
-    this.loginService.register(this.registerInfo.username,  this.registerInfo.password,this.registerInfo.email,this.registerInfo.appUserRoles).subscribe(
+    this.loginService.register( this.isChecked, this.registerInfo.username,  this.registerInfo.password,this.registerInfo.email,this.registerInfo.appUserRoles).subscribe(
       response => {
         // this.handleSuccessfulResponse(response),
         //   this.tokenStorage.saveToken(response.accessToken);
+        if(response.using2FA){
+        	this.isUsing2FA = true;
+        	this.qrCodeImage = response.qrCodeImage;
+          this.tokenStorage.saveUserQrImage(response);
+         this.forward('/otp');
 
-        this.tokenStorage.saveUser(response);
+        }
         this.isLoginFailed = false;
+        this.isSuccessful = true;
         this.isLoggedIn = true;
-        this.roles = this.tokenStorage.getUser().roles;
-        // this.reloadPage();
+         this.forward('/');
       },
       err => {
         // this.handleSuccessfulResponse(err)
@@ -114,7 +112,25 @@ export class RegisterComponent implements OnInit {
 
     this.validateSubmit();
   }
- 
+   
+  forward(url): void {
+    window.location.href = url;
+  }
+  onCheckboxChange(event: any) {
+    if (event.target.checked) {
+      // Checkbox is checked
+      console.log('Checkbox is checked');
+      this.isChecked=true;
+      // Perform any action you want here
+    } else {
+      this.isChecked=false;
+
+      // Checkbox is unchecked
+      console.log('Checkbox is unchecked');
+      // Perform any action you want here
+    }
+  }
+     
 }
 
 

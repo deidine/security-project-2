@@ -1,30 +1,33 @@
 package com.example.springsocial.controller;
 
+import javax.validation.constraints.NotEmpty;
+import static dev.samstevens.totp.util.Utils.getDataUriForImage;
+
 import com.example.springsocial.exception.BadRequestException;
-import com.example.springsocial.exception.ResourceNotFoundException;
 import com.example.springsocial.exception.UserNotVerifiedException;
 import com.example.springsocial.model.ConfirmationToken;
-import com.example.springsocial.model.Entite;
 import com.example.springsocial.model.User;
 import com.example.springsocial.payload.ApiResponse;
 import com.example.springsocial.payload.AuthResponse;
 import com.example.springsocial.payload.LoginRequest;
 import com.example.springsocial.payload.SignUpRequest;
+import com.example.springsocial.payload.SignUpResponse;
+import com.example.springsocial.payload.TotpRequest;
 import com.example.springsocial.payload.VerifyEmailRequest;
 import com.example.springsocial.repository.UserRepository;
-import com.example.springsocial.security.CurrentUser;
 import com.example.springsocial.security.CustomUserDetailsService;
 import com.example.springsocial.security.TokenProvider;
-import com.example.springsocial.security.UserPrincipal;
 import com.example.springsocial.service.AuthService;
 import com.example.springsocial.service.EmailSenderService;
-
+import dev.samstevens.totp.code.CodeVerifier;
+import dev.samstevens.totp.exceptions.QrGenerationException;
+import dev.samstevens.totp.qr.QrData;
+import dev.samstevens.totp.qr.QrDataFactory;
+import dev.samstevens.totp.qr.QrGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,7 +35,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Calendar;
@@ -49,11 +51,17 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 
     @Autowired
+    private QrGenerator qrGenerator;
+    @Autowired
+    private CodeVerifier verifier;
+    @Autowired
     private AuthService authService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private QrDataFactory qrDataFactory;
     @Autowired
     private CustomUserDetailsService userDetailsService;
 
@@ -79,22 +87,33 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String token = tokenProvider.createToken(authentication);
-        log.info("  user login"+loginRequest.toString());
+        log.info("  user login" + loginRequest.toString());
         log.info("login");
-    
+
         return ResponseEntity.ok(new AuthResponse(token, user2.getName(), user2.getAppUserRoles(), user2.getEmail()));
 
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest)
+            throws QrGenerationException {
         System.out.println("deidine 5a9 mn houn" + signUpRequest.getAppUserRoles());
         if (authService.existsByEmail(signUpRequest.getEmail())) {
             throw new BadRequestException("Account already exists on this mail Id.");
         }
-
         User user = authService.saveUser(signUpRequest);
+
+        if (signUpRequest.getUsing2FA()) {
+            QrData data = qrDataFactory.newBuilder().label(user.getEmail()).secret(user.getSecret())
+                    .issuer("deidine").build();
+            // Generate the QR code image data as a base64 string which can
+            // be used in an <img> tag:
+            String qrCodeImage = getDataUriForImage(qrGenerator.generate(data), qrGenerator.getImageMimeType());
+            return ResponseEntity.ok().body(new SignUpResponse(true, qrCodeImage, user.getEmail()));
+        }
+
         ConfirmationToken confirmationToken = authService.createToken(user);
+
         emailSenderService.sendMail(user.getEmail(), confirmationToken.getConfirmationToken());
 
         URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/user/me")
@@ -183,4 +202,24 @@ public class AuthController {
         System.out.println("deideine deleted");
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/verify")
+    // @PreAuthorize("hasRole('PRE_VERIFICATION_USER')")
+    public ResponseEntity<?> verifyCode(@Valid @RequestBody TotpRequest request) {
+        System.out.println(request.getEmail() + "  " + request.getCode());
+        User user = userDetailsService.loadUserByUsername2(request.getEmail());
+
+        if (!verifier.isValidCode(user.getSecret(), request.getCode())) {
+
+            return new ResponseEntity<>(new ApiResponse(false, "Invalid Code!"),
+                    HttpStatus.BAD_REQUEST);
+        }
+        
+        user.setEmailVerified(true);
+        authService.save(user);
+        System.out.println("verify tocken");
+        // String jwt = tokenProvider.createToken(user, true);
+        return ResponseEntity.ok(new ApiResponse(true,"Account verified successfully!"));
+    }
+
 }

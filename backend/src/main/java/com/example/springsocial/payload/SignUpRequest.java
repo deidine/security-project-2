@@ -4,9 +4,9 @@ import java.util.List;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import com.example.springsocial.model.AppUserRole;
-
 
 public class SignUpRequest {
     @NotBlank
@@ -18,10 +18,14 @@ public class SignUpRequest {
 
     @NotBlank
     private String password;
- List<AppUserRole> appUserRoles;
-public List<AppUserRole> getAppUserRoles(){
-    return appUserRoles;
-}
+    List<AppUserRole> appUserRoles;
+    @NotNull
+    private boolean using2FA;
+
+    public List<AppUserRole> getAppUserRoles() {
+        return appUserRoles;
+    }
+
     public String getName() {
         return name;
     }
@@ -44,5 +48,13 @@ public List<AppUserRole> getAppUserRoles(){
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getUsing2FA() {
+        return using2FA;
+    }
+
+    public void setUsing2FA(Boolean using2FA) {
+        this.using2FA = using2FA;
     }
 }

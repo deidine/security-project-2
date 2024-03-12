@@ -1,0 +1,39 @@
+<div class="col-md-12">
+	<div class="card card-container">
+
+
+
+		<img id="profile-img" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" class="profile-img-card" />
+		<form *ngIf="!isLoggedIn" name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
+			<div class="form-group">
+				<label for="code">email</label>
+
+				<input type="email" readonly value="{{email}}" class="form-control" name="email"  >
+			</div>
+			<div class="form-group">
+				<label for="code">Enter the 6-digit code from your authenticator app</label>
+				<input type="text" class="form-control" name="code" [(ngModel)]="form.code" required minlength="6"
+					#code="ngModel" />
+				<div class="alert alert-danger" role="alert" *ngIf="f.submitted && code.invalid">
+					<div *ngIf="code.errors.required">Code is required</div>
+					<div *ngIf="code.errors.minlength">Code must be at least 6 characters</div>
+				</div>
+
+			</div>
+			<div class="form-group">
+				<button class="btn btn-primary btn-block">Login</button>
+			</div>
+			<div class="form-group">
+				<div class="alert alert-danger" role="alert" *ngIf="isLoginFailed">Verification failed: {{ errorMessage }}
+				</div>
+			</div>
+		</form>
+		<div class="alert alert-success" *ngIf="isLoggedIn"> Account verified successfully!   <br> .</div>
+		<div *ngIf="isUsing2FA">
+			<p>"Scannez ce code QR en utilisant l'application Google Authenticator sur votre téléphone pour
+				l'utiliser ultérieurement lors de la connexion</p>
+			<img src="{{qrCodeImage}}" class="img-fluid" />
+
+		</div>
+	</div>
+</div>

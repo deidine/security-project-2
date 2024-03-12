@@ -32,8 +32,6 @@ export class AuthService {
   }
   
   verify(credentials): Observable<any> {
-    return this.http.post(AppConstants.AUTH_API + 'verify', credentials.code, {
-    	  headers: new HttpHeaders({ 'Content-Type': 'text/plain' })
-    });
+    return this.http.post(AppConstants.AUTH_API + 'verify', credentials.code);
   }
 }

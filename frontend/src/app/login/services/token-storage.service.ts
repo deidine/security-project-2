@@ -3,6 +3,7 @@ export const TOKEN = 'token';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
+const IMAGE_QRCODE = 'image-qrcode';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,10 @@ export class TokenStorageService {
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 
+  public saveUserQrImage(data: any): void {
+    window.sessionStorage.removeItem(IMAGE_QRCODE);
+    window.sessionStorage.setItem(IMAGE_QRCODE, JSON.stringify(data));
+  }
   public getUser(): any {
     const user = window.sessionStorage.getItem(USER_KEY);
     if (user) {
@@ -39,4 +44,13 @@ export class TokenStorageService {
 
     return {};
   }
+  public getUserFromQRCode(): any {
+    const data = window.sessionStorage.getItem(IMAGE_QRCODE);
+    if (data) {
+      return JSON.parse(data);
+    }
+
+    return {};
+  }
+
 }

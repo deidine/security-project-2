@@ -48,7 +48,7 @@ server:
 spring:
     contentnegotiation:
               defaultContentType: application/json
-    # address : 192.168.56.215
+    # address : 192.168.134.215
     datasource:
         url: jdbc:mysql://localhost:3306/spring_social?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
         username: root

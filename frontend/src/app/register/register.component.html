@@ -1,98 +1,101 @@
 <!-- <div style="background: linear-gradient( #2b74bd ,rgb(183, 226, 243))"> -->
-<div> 
+<div>
 
 
-  <div class="login-main-div" >
+  <div class="login-main-div">
     <app-social-login></app-social-login>
 
-    <mat-card class="mat-card-aligner example-card" >
-        <mat-card-header class="mat-card-header">
-            <mat-card-title>
+    <mat-card class="mat-card-aligner example-card">
+      <mat-card-header class="mat-card-header">
+        <mat-card-title>
           <img class="mat-card-header-image" src="assets/images/DiMS login logo.png">
         </mat-card-title>
-            <mat-card-subtitle>Sign-up to your account</mat-card-subtitle>
-        </mat-card-header>
+        <mat-card-subtitle>Sign-up to your account</mat-card-subtitle>
+      </mat-card-header>
 
-        <hr class="hr-border">
-        
-        <div *ngIf=loginFormError class="loginFormErrorDiv">
-            <h6 class="alert alert-danger">Invalid Credentials</h6>
+      <hr class="hr-border">
+
+      <div *ngIf=loginFormError class="loginFormErrorDiv">
+        <h6 class="alert alert-danger">Invalid Credentials</h6>
+      </div>
+
+      <br>
+
+
+      <form [formGroup]="loginForm" #myForm="ngForm" (ngSubmit)="onSubmit(); myForm.reset()">
+
+        <div class="form-group">
+
+          <label>username</label>
+          <input type="text" [class.is-invalid]="loginForm.get('ipusername').invalid
+                    && loginForm.get('ipusername').touched" [class.is-valid]="loginForm.get('ipusername').valid"
+            formControlName="ipusername" class="form-control">
+
+          <small class="text-danger" [class.d-none]="loginForm.get('ipusername').valid
+                          || loginForm.get('ipusername').untouched">
+            Invalid username </small>
+
+        </div>
+        <div class="form-group">
+
+          <label>email</label>
+          <input type="email" [class.is-invalid]="loginForm.get('ipemail').invalid
+                    && loginForm.get('ipemail').touched" [class.is-valid]="loginForm.get('ipemail').valid"
+            formControlName="ipemail" class="form-control">
+
+          <small class="text-danger" [class.d-none]="loginForm.get('ipemail').valid
+                          || loginForm.get('ipemail').untouched">
+            Invalid email </small>
+
         </div>
 
-        <br>
+        <div class="form-group">
 
-
-        <form [formGroup] = "loginForm"  #myForm = "ngForm"  (ngSubmit)="onSubmit(); myForm.reset()">
-
-          <div class="form-group">
-            
-            <label>username</label>
-            <input type="text" [class.is-invalid]="loginForm.get('ipusername').invalid
-                    && loginForm.get('ipusername').touched"
-                   [class.is-valid]="loginForm.get('ipusername').valid" 
-                   formControlName="ipusername" class="form-control">
-
-                   <small class="text-danger"
-                          [class.d-none]="loginForm.get('ipusername').valid
-                          || loginForm.get('ipusername').untouched">
-                       Invalid username  </small>
-            
-          </div>
-          <div class="form-group">
-            
-            <label>email</label>
-            <input type="email" [class.is-invalid]="loginForm.get('ipemail').invalid
-                    && loginForm.get('ipemail').touched"
-                   [class.is-valid]="loginForm.get('ipemail').valid" 
-                   formControlName="ipemail" class="form-control">
-
-                   <small class="text-danger"
-                          [class.d-none]="loginForm.get('ipemail').valid
-                          || loginForm.get('ipemail').untouched">
-                       Invalid email  </small>
-            
-          </div>
-
-          <div class="form-group">
-            
-              <label>Password</label>
-              <input type="password" [class.is-invalid]="loginForm.get('ipPassword').invalid
-                      && loginForm.get('ipPassword').touched"
-                      [class.is-valid]="loginForm.get('ipPassword').valid" 
-                      formControlName="ipPassword" class="form-control">
-              <small [class.d-none]="loginForm.get('ipPassword').invalid 
+          <label>Password</label>
+          <input type="password" [class.is-invalid]="loginForm.get('ipPassword').invalid
+                      && loginForm.get('ipPassword').touched" [class.is-valid]="loginForm.get('ipPassword').valid"
+            formControlName="ipPassword" class="form-control">
+          <small [class.d-none]="loginForm.get('ipPassword').invalid 
                       && loginForm.get('ipPassword').touched">Password must be of min. 6 characters</small>
-              
-              <small class="text-danger"
-                      [class.d-none]="loginForm.get('ipPassword').valid
+
+          <small class="text-danger" [class.d-none]="loginForm.get('ipPassword').valid
                       || loginForm.get('ipPassword').untouched">
-                  Invalid Password (min 6 characters required)</small>
+            Invalid Password (min 6 characters required)</small>
 
-          </div>
-                      
+        </div>
         <br>
-
-          <mat-card-actions style="justify-content: center">
-            <button mat-raised-button 
-                    class="btn btn-secondary"
-                    matTooltip="Log-in into your account"
-                    aria-label="Button that displays a tooltip that can be programatically disabled"
-                    [disabled]="loginForm.get('ipusername').invalid || loginForm.get('ipPassword').invalid"
-                    style="width:80%; left:10%; background:rgb(183, 226, 243)">
-                    <mat-icon >fingerprint</mat-icon>                  
-                    register    
-             </button>
-          </mat-card-actions>
+        <div class="form-group form-check">
+          <input type="checkbox"  name="mfa" class="form-check-input" formControlName="isChecked"  (change)="onCheckboxChange($event)"/>
+          <label class="form-check-label" for="using2FA">Use
+            Two Step Verification</label>
+        </div>
+        <br>
+        {{isChecked}}
+        <mat-card-actions style="justify-content: center">
+          <button mat-raised-button class="btn btn-secondary" matTooltip="Log-in into your account"
+            aria-label="Button that displays a tooltip that can be programatically disabled"
+            [disabled]="loginForm.get('ipusername').invalid || loginForm.get('ipPassword').invalid"
+            style="width:80%; left:10%; background:rgb(183, 226, 243)">
+            <mat-icon>fingerprint</mat-icon>
+            register
+          </button>
+        </mat-card-actions>
 
 
         <br>
 
       </form>
-        
-        <hr class="hr-border">
+      <div class="alert alert-success" *ngIf="isSuccessful">
+        Your registration is successful!
+        <div *ngIf="isUsing2FA">
+          <p>"Scannez ce code QR en utilisant l'application Google Authenticator sur votre téléphone pour 
+            l'utiliser ultérieurement lors de la connexion</p>
+          <img src="{{qrCodeImage}}" class="img-fluid" />
+        </div>
+      </div>
+      <hr class="hr-border">
 
     </mat-card>
-  
+
   </div>
 </div>
-  

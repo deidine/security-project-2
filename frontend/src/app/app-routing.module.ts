@@ -23,6 +23,7 @@ import { usersComponent } from './users/users.component';
 import { AdminGuard } from './services/admin-guard.service';
 import { LogoutComponent } from './login/LogoutComponent.component';
 import { VerifyLinkModalComponent } from './verify-link-modal/verify-link-modal.component';
+import { TotpComponent } from './totp/totp.component';
 
 export const externalUrlProvider = new InjectionToken('externalUrlRedirectResolver');
 
@@ -50,6 +51,7 @@ const routes: Routes = [
   { path: 'addentite', component: AddEntiteComponent, canActivate: [AuthGaurdService] },
   { path: 'hover', component: hover },
 {path:'users',component:usersComponent  ,canActivate: [AdminGuard] },
+{path:'otp',component:TotpComponent},
   { path: '**', redirectTo: ('/page-not-found') },
 
 

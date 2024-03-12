@@ -121,6 +121,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
                 .antMatchers(HttpMethod.GET, "/auth/users").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/**/entite/delete/*").hasRole("ADMIN")
+                .antMatchers( "/auth/verify").permitAll()
                 .antMatchers("/auth/**",
                         "/oauth2/**", "/api/entite/mougatta",
                         "/api/entite/cities")
@@ -149,7 +150,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().accessDeniedPage("/login");
 
         http.addFilterBefore(new CorsFilter(), ChannelProcessingFilter.class);
-        http.headers().contentSecurityPolicy("script-src 'self'");
+        http.headers().contentSecurityPolicy("script-src'self'");
 
         // Add our custom Token based authentication filter
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

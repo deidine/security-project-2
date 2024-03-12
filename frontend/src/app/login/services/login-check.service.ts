@@ -33,13 +33,22 @@ export class LoginCheckService {
 
 
 
-  register(name: string, password: string, email: string, appUserRoles: string[]): Observable<any> {
+  register(using2FA: boolean, name: string, password: string, email: string, appUserRoles: string[]): Observable<any> {
     console.log("Call to backend method to check userEmail and password " + name);
     return this.httpClient.post<RrgisterInfo>(`${environment.authURL}/auth/signup`,
       {
+        using2FA,
         name,
         password,
         email, appUserRoles
+      }, httpOptions);
+  }
+  verify(code: string, email: string): Observable<any> {
+    return this.httpClient.post<Verfy>(`${environment.authURL}/auth/verify`,
+      {
+
+        code,
+        email
       }, httpOptions);
   }
 
@@ -88,7 +97,7 @@ export class LoginCheckService {
           }
         )
       }
-      );
+    );
   }
 
 }
@@ -128,4 +137,8 @@ export class RrgisterInfo {
   password: string;
   email: string;
   appUserRoles: string[];
+}
+export class Verfy {
+  code: string;
+  email: string;
 }

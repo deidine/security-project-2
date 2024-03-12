@@ -23,7 +23,7 @@ import { RegisterComponent } from './register/register.component';
 import { EditDepComponent } from './department/edit-dep/edit-dep.component';
 import { AddEntiteComponent } from './Entite/add-entite/add-entite.component';
 import { GetAllentitesComponent } from './Entite/get-all-entites/get-all-entites.component';
-import { hover } from './header/hover.component'; 
+import { hover } from './header/hover.component';
 import { LoginComponentOauth2 } from './oauth2/login/login.component';
 import { RegisterComponent2 } from './oauth2/register/register.component';
 import { SocialLoginComponent } from './social-login/social-login.component';
@@ -32,27 +32,28 @@ import { NotFoundComponent } from './social-login/not-found.component';
 import { usersComponent } from './users/users.component';
 import { LogoutComponent } from './login/LogoutComponent.component';
 import { VerifyLinkModalComponent } from './verify-link-modal/verify-link-modal.component';
+import { TotpComponent } from './totp/totp.component';
 // import { GetentiteByCategoryComponent } from './Entite/get-entite-by-category/get-entite-by-category.component';
 // import { UpdateEntiteComponent } from './Entite/update-entite/update-entite.component';
 
 @NgModule({
   declarations: [
-    AppComponent,
+    AppComponent, TotpComponent,
     LoginComponent, departmentComponent,
     // DistributerComponent,
     Oauth2Handler,
-    NotFoundComponent ,
+    NotFoundComponent,
     // RetailerComponent,
     SocialLoginComponent,
     AddEntiteComponent, GetAllentitesComponent,//GetentiteByCategoryComponent,UpdateEntiteComponent,
     UpdatePasswordComponent,
     EditDepComponent, AddDepComponent, HeaderComponent, SidenavbarComponent, DialogOverviewExampleDialog, LogoutDialogComponent
-    ,RegisterComponent2,
+    , RegisterComponent2,
     MyProfileComponent,
     PageNotFoundComponent,
     LoginComponentOauth2,
     RegisterComponent,
-    hover, usersComponent,LogoutComponent,VerifyLinkModalComponent
+    hover, usersComponent, LogoutComponent, VerifyLinkModalComponent
   ],
   imports: [
     BrowserModule,

@@ -50,6 +50,11 @@ public class User {
     @Enumerated(EnumType.STRING)
     private AuthProvider provider;
 
+    @Column(name = "USING_2FA")
+    private boolean using2FA;
+
+    private String secret;
+  
     private String providerId;
  
 }

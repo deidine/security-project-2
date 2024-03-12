@@ -1,5 +1,6 @@
 package com.example.springsocial.service;
 
+import dev.samstevens.totp.secret.SecretGenerator;
 import com.example.springsocial.exception.BadRequestException;
 import com.example.springsocial.model.AuthProvider;
 import com.example.springsocial.model.ConfirmationToken;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
 
+	@Autowired
+	private SecretGenerator secretGenerator;
     @Autowired
     private UserRepository userRepository;
     
@@ -38,6 +41,10 @@ public class AuthService {
 
     public User saveUser(SignUpRequest signUpRequest) {
         User user = new User();
+        if (signUpRequest.getUsing2FA()) {
+			user.setUsing2FA(true);
+			user.setSecret(secretGenerator.generate());
+		} 
         user.setAppUserRoles(signUpRequest.getAppUserRoles());
         user.setName(signUpRequest.getName());
         user.setEmail(signUpRequest.getEmail());
