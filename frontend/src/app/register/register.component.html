@@ -69,8 +69,7 @@
           <label class="form-check-label" for="using2FA">Use
             Two Step Verification</label>
         </div>
-        <br>
-        {{isChecked}}
+        <br> 
         <mat-card-actions style="justify-content: center">
           <button mat-raised-button class="btn btn-secondary" matTooltip="Log-in into your account"
             aria-label="Button that displays a tooltip that can be programatically disabled"
@@ -87,11 +86,7 @@
       </form>
       <div class="alert alert-success" *ngIf="isSuccessful">
         Your registration is successful!
-        <div *ngIf="isUsing2FA">
-          <p>"Scannez ce code QR en utilisant l'application Google Authenticator sur votre téléphone pour 
-            l'utiliser ultérieurement lors de la connexion</p>
-          <img src="{{qrCodeImage}}" class="img-fluid" />
-        </div>
+        
       </div>
       <hr class="hr-border">
 

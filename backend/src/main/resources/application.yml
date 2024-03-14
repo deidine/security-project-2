@@ -48,9 +48,9 @@ server:
 spring:
     contentnegotiation:
               defaultContentType: application/json
-    # address : 192.168.134.215
+    # address : 192.168.187.215
     datasource:
-        url: jdbc:mysql://localhost:3306/spring_social?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+        url: jdbc:mysql://localhost:3306/authentification?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
         username: root
         password: 
 
@@ -86,6 +86,7 @@ spring:
                 - email
                 - public_profile
             github:
+            # https://github.com/settings/applications/2471326
               clientId: cf73cc1029a654d3e39f
               clientSecret: 81906dcda5afa6e5bf59da68ea6cb333d13483db
               redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
@@ -127,9 +128,9 @@ app:
     # redirectUri mentioned by the client in the /oauth2/authorize request.
     # We're not using cookies because they won't work well in mobile clients.
     authorizedRedirectUris:
+      - http://192.168.187.215:4200/oauth2/redirect
       - http://localhost:4200/oauth2/redirect
-      - http://192.168.56.215:4200/oauth2/redirect
       - http://localhost:3000/oauth2/redirect
       - myandroidapp://oauth2/redirect
       - myiosapp://oauth2/redirect
-      
+       

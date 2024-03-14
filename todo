@@ -1,4 +1,5 @@
 keytool -genkeypair -alias projecm2 -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore project.p12 -validity 365 #https://www.youtube.com/watch?v=eBEq0Kv7vsw&ab_channel=CodeJava
 https://mail.google.com/mail/u/0/#inbox
 
-
+if you change ip adress change this file:
+sendEmail service, aplicatin.yaml address and authorizedRedirectUris,crosFilter.java,

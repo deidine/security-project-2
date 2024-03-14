@@ -3,6 +3,8 @@ package com.example.springsocial.config;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.example.springsocial.security.*;
 import com.example.springsocial.security.oauth2.CustomOAuth2UserService;
@@ -89,11 +91,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        if (Boolean.parseBoolean(env.getRequiredProperty("security.disable.csrf")))
-            http.csrf().disable();
+        // if (Boolean.parseBoolean(env.getRequiredProperty("security.disable.csrf")))
+        //     http;
         http
                 .cors()
                 .and()
+                .csrf().disable()
+                // .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
@@ -116,8 +120,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers(env.getRequiredProperty("security.uri.white-list").split(",")).permitAll()
-
+                // .antMatchers(env.getRequiredProperty("security.uri.white-list").split(",")).permitAll()
+   
                 .antMatchers(HttpMethod.POST, "/**/entite/save").hasRole("CLIENT")
                 .antMatchers(HttpMethod.GET, "/auth/users").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/**/entite/delete/*").hasRole("ADMIN")
@@ -190,5 +194,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // .limitRefreshPeriod(Duration.ofMinutes(1)); // Duration for the rate limit
     // window
     // }
-
+//  @Bean
+//     public JavaMailSender javaMailSender() {
+//         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+//         // Configure your mail sender properties here
+//         return mailSender;
+//     }
 }
