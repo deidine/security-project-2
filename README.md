@@ -35,3 +35,8 @@ permissions pour garantir l'intégrité et
 la confidentialité des données.
 o Mise en place de mécanismes de
 contrôle d'accès sécurisé.
+<img src="https://github.com/deidine/security-project-2/blob/main/screens/users.jpg">
+<img src="https://github.com/deidine/security-project-2/blob/main/screens/otp.jpg">
+<img src="https://github.com/deidine/security-project-2/blob/main/screens/Capture%20d%E2%80%99%C3%A9cran%202024-03-14%20153030.jpg">
+<img src="https://github.com/deidine/security-project-2/blob/main/screens/login.jpg">
+
