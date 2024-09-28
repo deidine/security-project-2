@@ -3,3 +3,12 @@ https://mail.google.com/mail/u/0/#inbox
 
 if you change ip adress change this file:
 sendEmail service, aplicatin.yaml address and authorizedRedirectUris,crosFilter.java,
+
+
+
+Go to your Google Account Security Settings.
+Scroll down to Signing in to Google and enable 2-Step Verification (if you haven’t already).
+Once 2-Step Verification is enabled, go to the App passwords section.
+Under Select app, choose Mail.
+Under Select device, choose Other (Custom name), then name it something like Express SMTP.
+Google will generate a 16-character App Password. Use this password as your SMTP_PASS in your .env file.
